@@ -135,6 +135,7 @@ fun accountInThreeYears(initial: Int, percent: Int): Double1 {
             i++
             s = (s + (s * percent / 100)).toDouble()
         }
+
         return s
     } else {
         return initial.toDouble()
