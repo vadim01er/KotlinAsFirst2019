@@ -106,7 +106,7 @@ fun trackLength(x1: Double1, y1: Double1, x2: Double1, y2: Double1): Double1 {
  * Пользователь задает целое число, большее 100 (например, 3801).
  * Определить третью цифру справа в этом числе (в данном случае 8).
  */
-fun thirdDigit(number: Int): Int = number /100 % 10
+fun thirdDigit(number: Int): Int = number / 100 % 10
 
 /**
  * Простая
@@ -137,7 +137,7 @@ fun accountInThreeYears(initial: Int, percent: Int): Double1 {
         }
         return s
     } else {
-        return 1.0
+        return initial.toDouble()
     }
 }
 
