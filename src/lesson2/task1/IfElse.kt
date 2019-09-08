@@ -168,27 +168,28 @@ fun rookOrBishopThreatens(
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
     var maxim: Double = 0.0
-    var number1 = 0.0
-    var number2 = 0.0
-    if (a > b) {
-        if (a > c) maxim = a; number1 = b; number2 = c
-    }
-    else if (b > c) {
-        maxim = b
-        number1 = a
-        number2 = c
-    }
-    else {
-        maxim = c
-        number1 = a
-        number2 = b
-    }
-    val sumOf = sqr(number1) + sqr(number2)
+    if (a > b)
+        if (a > c) maxim = a else maxim = c
+    else if (b > c) maxim = b else maxim = c
 
-    if (maxim >= number1 + number2) return -1
-    else if (sqr(maxim) == sumOf) return 1
-    else if (sqr(maxim) >= sumOf) return 2
-    else return 0
+    when (maxOf(a, b, c)) {
+        a -> if (a >= b + c) return -1
+        b -> if (b >= a + c) return -1
+        else -> if (c >= b + a) return -1
+    }
+
+    when (maxOf(a, b, c)) {
+        a -> if (sqr(a) > sqr(b) + sqr(c)) return 2
+        else if (sqr(a) == sqr(b) + sqr(c)) return 1
+        else return 0
+        b -> if (sqr(b) > sqr(a) + sqr(c)) return 2
+        else if (sqr(b) == sqr(a) + sqr(c)) return 1
+        else return 0
+        else -> if (sqr(c) > sqr(b) + sqr(a)) return 2
+        else if (sqr(c) == sqr(b) + sqr(a)) return 1
+        else return 0
+    }
+
 }
 
 /**
