@@ -6,6 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.abs
+import lesson1.task1.sqr
 
 /**
  * Пример
@@ -165,7 +166,30 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    var maxim: Double = 0.0
+    var number1 = 0.0
+    var number2 = 0.0
+    if (a > b) {
+        if (a > c) maxim = a; number1 = b; number2 = c
+    }
+    else if (b > c) {
+        maxim = b
+        number1 = a
+        number2 = c
+    }
+    else {
+        maxim = c
+        number1 = a
+        number2 = b
+    }
+    val sumOf = sqr(number1) + sqr(number2)
+
+    if (maxim >= number1 + number2) return -1
+    else if (sqr(maxim) == sumOf) return 1
+    else if (sqr(maxim) >= sumOf) return 2
+    else return 0
+}
 
 /**
  * Средняя
@@ -177,12 +201,12 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     var d1 = 0
-    if ((b>c)&&(b<d) && (a > c) && (a < d)) d1 = b - a
-    else if ((c>a)&&(c<b) && (d>a) && (d<b)) d1 = d - c
+    if ((b > c) && (b < d) && (a > c) && (a < d)) d1 = b - a
+    else if ((c > a) && (c < b) && (d > a) && (d < b)) d1 = d - c
     else if ((a > c) && (a < d)) {
         d1 = d - a
     }
-    else if ((b>c)&&(b<d)) {
+    else if ((b > c) && (b < d)) {
         d1 = b - c
     }
     else if ((a == c)) {
@@ -190,10 +214,10 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
         else d1 = b - a
     }
     else if (d == b) {
-        if (a>c) d1 = d - a
+        if (a > c) d1 = d - a
         else d1 = d - c
     }
-    else if ((b==c) || (a==d)) d1 = 0
+    else if ((b == c) || (a == d)) d1 = 0
     else if ((a == c) && (b == d)) d1 = b - a
     else d1 = -1
     return d1
