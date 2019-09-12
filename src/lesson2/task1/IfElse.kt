@@ -7,6 +7,7 @@ import kotlin.math.max
 import kotlin.math.sqrt
 import kotlin.math.abs
 import lesson1.task1.sqr
+import kotlin.math.min
 
 /**
  * Пример
@@ -66,18 +67,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
  * вернуть строку вида: «21 год», «32 года», «12 лет».
  */
 fun ageDescription(age: Int): String {
-    var god : String = ""
-    if (age % 100 in 5..20) {
-        god = "лет"
-    }
-    else if (age % 10 == 1) {
-        god = "год"
-    }
-    else if (age % 10 in 2..4) {
-        god = "года"
-    }
-    else if ((age % 10 in 5..9) || (age % 10 == 0)){
-        god = "лет"
+    var god = ""
+    if (age % 100 in 5..20) return "$age лет"
+    when (age % 10) {
+        1 -> god = "год"
+        in 2..4 -> god = "года"
+        in 5..9 -> god = "лет"
+        0 -> god = "лет"
     }
     return "$age $god"
 }
@@ -94,24 +90,15 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    var s05 = (t1 * v1 + t2 * v2 + t3 * v3) / 2
-    var t0: Double = 0.0
-    var s051: Double = 0.0
-    var s052: Double = 0.0
-
-    if (s05 / v1 == t1) t0 = t1
-    else if (s05 / v1 < t1) t0 = s05 / v1
-    else {
-        s051 = s05 - v1 * t1
-        if (s051 / v2 == t2) t0 = t1 + t2
-        else if (s051 / v2 < t2) t0 = t1 + s051 / v2
-        else {
-            s052 = s051 - v2 * t2
-            if (s052 / v3 == t3) t0 = t1 + t2 + t3
-            else if (s052 / v3 < t3) t0 = t1 + t2 + s052 / v3
-        }
+    var lengthInTime1 = v1 * t1
+    var lengthInTime2 = v2 * t2
+    var lengthInTime3 = v3 * t3
+    var lengthHalf = (lengthInTime1 + lengthInTime2 + lengthInTime3) / 2.0
+    return when {
+        lengthHalf <= lengthInTime1 -> lengthHalf / v1
+        lengthHalf <= lengthInTime2 + lengthInTime1 -> t1 + (lengthHalf - lengthInTime1) / v2
+        else -> t1 + t2 + (lengthHalf - (lengthInTime1 + lengthInTime2)) / v3
     }
-    return t0
 }
 
 /**
@@ -128,12 +115,14 @@ fun whichRookThreatens(
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
 ): Int {
-    var out = 0
-    if (((rookX2 == kingX) || (rookY2 == kingY)) && ((rookX1 == kingX) || (rookY1 == kingY))) out = 3
-    else if ((kingX == rookX1) || (kingY == rookY1)) out = 1
-    else if ((rookX2 == kingX) || (rookY2 == kingY)) out = 2
-    else out = 0
-    return out
+    val firstRook = (rookX1 == kingX || rookY1 == kingY)
+    val secondRook = (rookX2 == kingX || rookY2 == kingY)
+    return when {
+        firstRook && secondRook -> 3
+        firstRook -> 1
+        secondRook -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -152,10 +141,14 @@ fun rookOrBishopThreatens(
     bishopX: Int, bishopY: Int
 ): Int {
     var out = 0
-    if ((abs(kingX - bishopX) == abs(kingY - bishopY)) && ((rookX == kingX) || (rookY == kingY))) out = 3
-    else if ((rookX == kingX) || (rookY == kingY)) out = 1
-    else if ((abs(kingX - bishopX) == abs(kingY - bishopY))) out = 2
-    return out
+    val firstRook = (rookX == kingX || rookY == kingY)
+    val secondBishop = (abs(kingX - bishopX) == abs(kingY - bishopY))
+    return when {
+        secondBishop && firstRook -> 3
+        firstRook -> 1
+        secondBishop -> 2
+        else -> 0
+    }
 }
 
 /**
@@ -167,28 +160,17 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var maxim: Double = 0.0
-    if (a > b)
-        if (a > c) maxim = a else maxim = c
-    else if (b > c) maxim = b else maxim = c
-
-    when (maxOf(a, b, c)) {
-        a -> if (a >= b + c) return -1
-        b -> if (b >= a + c) return -1
-        else -> if (c >= b + a) return -1
+    var maxim = maxOf(a, b, c)
+    var valueOfSquare = sqr(a) + sqr(b) + sqr(c)
+    var outOfSquare = 2 * sqr(maxim) - valueOfSquare
+    if (a < b + c && b < a + c && c <= a + c){
+        return when {
+            outOfSquare > 0.0 -> 2
+            outOfSquare == 0.0 -> 1
+            else -> 0
+        }
     }
-
-    when (maxOf(a, b, c)) {
-        a -> if (sqr(a) > sqr(b) + sqr(c)) return 2
-        else if (sqr(a) == sqr(b) + sqr(c)) return 1
-        else return 0
-        b -> if (sqr(b) > sqr(a) + sqr(c)) return 2
-        else if (sqr(b) == sqr(a) + sqr(c)) return 1
-        else return 0
-        else -> if (sqr(c) > sqr(b) + sqr(a)) return 2
-        else if (sqr(c) == sqr(b) + sqr(a)) return 1
-        else return 0
-    }
+    return -1
 
 }
 
@@ -201,25 +183,6 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    var d1 = 0
-    if ((b > c) && (b < d) && (a > c) && (a < d)) d1 = b - a
-    else if ((c > a) && (c < b) && (d > a) && (d < b)) d1 = d - c
-    else if ((a > c) && (a < d)) {
-        d1 = d - a
-    }
-    else if ((b > c) && (b < d)) {
-        d1 = b - c
-    }
-    else if ((a == c)) {
-        if (b > d) d1 = d - a
-        else d1 = b - a
-    }
-    else if (d == b) {
-        if (a > c) d1 = d - a
-        else d1 = d - c
-    }
-    else if ((b == c) || (a == d)) d1 = 0
-    else if ((a == c) && (b == d)) d1 = b - a
-    else d1 = -1
-    return d1
+    if (b < c || d < a) return -1
+    else return min(b, d) - max(a, c)
 }

@@ -60,10 +60,8 @@ fun main() {
  * Пользователь задает время в часах, минутах и секундах, например, 8:20:35.
  * Рассчитать время в секундах, прошедшее с начала суток (30035 в данном случае).
  */
-fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
-    val time = 3600 * hours + 60 * minutes + seconds
-    return time
-}
+fun seconds(hours: Int, minutes: Int, seconds: Int): Int =
+    3600 * hours + 60 * minutes + seconds
 
 /**
  * Тривиальная
@@ -72,10 +70,8 @@ fun seconds(hours: Int, minutes: Int, seconds: Int): Int {
  * Определить длину того же отрезка в метрах (в данном случае 18.98).
  * 1 сажень = 3 аршина = 48 вершков, 1 вершок = 4.445 см.
  */
-fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double1 {
-    val dlina = ((sagenes * 48 * 4.445) + (arshins * 16 * 4.445) + (vershoks * 4.445))/ 100
-    return dlina
-}
+fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double1 =
+    ((sagenes * 48 * 4.445) + (arshins * 16 * 4.445) + (vershoks * 4.445)) / 100
 
 /**
  * Тривиальная
@@ -85,8 +81,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double1 {
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double1 {
     val secondOfGrad = deg * 3600 + min * 60 + sec
-    val rad = secondOfGrad * PI / (3600 * 180)
-    return rad
+    return secondOfGrad * PI / (3600 * 180)
 }
 
 /**
@@ -96,8 +91,8 @@ fun angleInRadian(deg: Int, min: Int, sec: Int): Double1 {
  * Например, расстояние между (3, 0) и (0, 4) равно 5
  */
 fun trackLength(x1: Double1, y1: Double1, x2: Double1, y2: Double1): Double1 {
-    val _m = sqr((x2 - x1)) + sqr((y2 - y1))
-    return sqrt(_m)
+    val x = sqr(abs(x2 - x1)) + sqr(abs(y2 - y1))
+    return sqrt(x)
 }
 
 /**
@@ -115,9 +110,8 @@ fun thirdDigit(number: Int): Int = number / 100 % 10
  * прибыл на станцию назначения в h2 часов m2 минут того же дня (например в 13:01).
  * Определите время поезда в пути в минутах (в данном случае 216).
  */
-fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int {
-    return hoursArrive * 60 + minutesArrive - hoursDepart * 60 - minutesDepart
-}
+fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minutesArrive: Int): Int =
+    hoursArrive * 60 + minutesArrive - hoursDepart * 60 - minutesDepart
 
 
 /**
@@ -130,16 +124,11 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
 fun accountInThreeYears(initial: Int, percent: Int): Double1 {
     var i = 1
     var s = initial.toDouble()
-    if (percent != 0) {
-        while (i < 4) {
-            i++
-            s = (s + (s * percent / 100)).toDouble()
-        }
-
-        return s
-    } else {
-        return initial.toDouble()
+    while (i < 4) {
+        i++
+        s = (s + (s * percent / 100))
     }
+    return s
 }
 
 /**
