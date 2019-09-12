@@ -163,7 +163,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     var maxim = maxOf(a, b, c)
     var valueOfSquare = sqr(a) + sqr(b) + sqr(c)
     var outOfSquare = 2 * sqr(maxim) - valueOfSquare
-    if (a < b + c && b < a + c && c <= a + c){
+    if (a < b + c && b < a + c && c < a + b) {
         return when {
             outOfSquare > 0.0 -> 2
             outOfSquare == 0.0 -> 1
