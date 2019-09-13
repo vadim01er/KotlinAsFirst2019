@@ -44,15 +44,15 @@ fun queenThreatens(x1: Int, y1: Int, x2: Int, y2: Int): Boolean =
  * Вернуть число дней в этом месяце этого года по григорианскому календарю.
  */
 fun daysInMonth(month: Int, year: Int): Int {
-    when (month) {
+    return when (month) {
         2 -> when {
-            year % 400 == 0 -> return 29
-            year % 100 == 0 -> return 28
-            year % 4 != 0 -> return 28
-            else -> return 29
+            year % 400 == 0 -> 29
+            year % 100 == 0 -> 28
+            year % 4 != 0 -> 28
+            else -> 29
         }
-        1, 3, 5, 7, 8, 10, 12 -> return 31
-        else -> return 30
+        1, 3, 5, 7, 8, 10, 12 -> 31
+        else -> 30
     }
 }
 
@@ -82,10 +82,10 @@ fun circleInside(
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val maxROrS = max(s, r)
     val minROrS = min(s, r)
-    when {
-        min(a, b) <= minROrS && max(a, b) <= maxROrS -> return true
-        min(c, b) <= minROrS && max(c, b) <= maxROrS -> return true
-        min(a, c) <= minROrS && max(a, c) <= maxROrS -> return true
-        else -> return false
+    return when {
+        min(a, b) <= minROrS && max(a, b) <= maxROrS -> true
+        min(c, b) <= minROrS && max(c, b) <= maxROrS -> true
+        min(a, c) <= minROrS && max(a, c) <= maxROrS -> true
+        else -> false
     }
 }

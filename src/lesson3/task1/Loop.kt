@@ -4,6 +4,7 @@ package lesson3.task1
 
 import lesson1.task1.sqr
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -70,12 +71,12 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var count = 1
+    var count = 0
     var number = n
-    while (number > 9) {
+    do {
         count++
         number /= 10
-    }
+    } while (number > 0)
     return count
 }
 
@@ -86,11 +87,16 @@ fun digitNumber(n: Int): Int {
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
 fun fib(n: Int): Int {
-    when (n) {
-        1 -> return 1
-        2 -> return 1
-        else -> return (fib(n - 1) + fib(n - 2))
+    if (n in 1..2) return 1
+    var n1 = 1
+    var n2 = 1
+    var n0 = 0
+    for (i in 3..n){
+        n0 = n1 + n2
+        n1 = n2
+        n2 = n0
     }
+    return n0
 }
 
 /**
@@ -100,13 +106,16 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var number1 = m
-    var number2 = n
-    while (number1 != number2) {
-        if (number1 > number2) number1 -= number2
-        else number2 -= number1
+    var a = m
+    var b = n
+    var k: Int
+    while (b > 0) {
+        a %= b
+        k = a
+        a = b
+        b = k
     }
-    return m * (n / number1)
+    return m / (a) * n
 }
 
 /**
@@ -127,11 +136,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var number = n - 1
-    while (n % number != 0) number--
-    if (number < 0) return 1 else return number
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -141,14 +146,16 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var number1 = m
-    var number2 = n
-    while (number1 != number2) {
-        if (number1 > number2) number1 -= number2
-        else number2 -= number1
+    var a = m
+    var b = n
+    var k: Int
+    while (b > 0) {
+        a %= b
+        k = a
+        a = b
+        b = k
     }
-    if (number1 == 1) return true
-    return false
+    return a == 1
 }
 
 /**
@@ -159,7 +166,6 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
 fun squareBetweenExists(m: Int, n: Int): Boolean {
-    var num = 0
     if (m == 1 && n == 1) return true
     for (num in m..n) {
         if (sqrt(num.toDouble()) * 100 % 100 == 0.0) return true
@@ -207,20 +213,16 @@ fun sin(x: Double, eps: Double): Double {
     var i = 1
     var j = 1
     var answer = 0.0
-    var num = x
+    var num = x % (2 * PI)
+    var sqrnum = num * num
     var numunder = 1.0
-    while (num / numunder > eps) {
+    while (num / numunder >= eps) {
         answer += j * num / numunder
         j *= -1
         i += 2
-        num = 1.0
-        numunder = 1.0
-        for (m in 1..i) {
-            num *= x
-            numunder *= m
-        }
+        num *= sqrnum
+        numunder *= (i - 1) * i
     }
-    if (answer.isNaN()) return 0.0
     return answer
 }
 
@@ -237,20 +239,17 @@ fun cos(x: Double, eps: Double): Double {
     var i = 0
     var j = 1
     var answer = 0.0
-    var num = 1.0
+    var num = x % (2 * PI)
+    var sqrnum = num * num
     var numunder = 1.0
+    num = 1.0
     while (num / numunder > eps) {
         answer += j * num / numunder
         j *= -1
         i += 2
-        num = 1.0
-        numunder = 1.0
-        for (m in 1..i) {
-            num *= x
-            numunder *= m
-        }
+        num *= sqrnum
+        numunder *= (i - 1) * i
     }
-    if (answer.isNaN()) return 1.0
     return answer
 }
 
@@ -294,9 +293,9 @@ fun isPalindrome(n: Int): Boolean = revert(n) == n
 fun hasDifferentDigits(n: Int): Boolean {
     var num = n / 10
     var num1 = 0
-    var num2 = n % 10
+    val num2 = n % 10
     var count = 1
-    var length = digitNumber(n)
+    val length = digitNumber(n)
     while (num > 0) {
         num1 = num % 10
         if (num2 == num1) count++

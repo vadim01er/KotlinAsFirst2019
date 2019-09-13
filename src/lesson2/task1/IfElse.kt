@@ -90,10 +90,10 @@ fun timeForHalfWay(
     t2: Double, v2: Double,
     t3: Double, v3: Double
 ): Double {
-    var lengthInTime1 = v1 * t1
-    var lengthInTime2 = v2 * t2
-    var lengthInTime3 = v3 * t3
-    var lengthHalf = (lengthInTime1 + lengthInTime2 + lengthInTime3) / 2.0
+    val lengthInTime1 = v1 * t1
+    val lengthInTime2 = v2 * t2
+    val lengthInTime3 = v3 * t3
+    val lengthHalf = (lengthInTime1 + lengthInTime2 + lengthInTime3) / 2.0
     return when {
         lengthHalf <= lengthInTime1 -> lengthHalf / v1
         lengthHalf <= lengthInTime2 + lengthInTime1 -> t1 + (lengthHalf - lengthInTime1) / v2
@@ -140,7 +140,6 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    var out = 0
     val firstRook = (rookX == kingX || rookY == kingY)
     val secondBishop = (abs(kingX - bishopX) == abs(kingY - bishopY))
     return when {
@@ -160,9 +159,9 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    var maxim = maxOf(a, b, c)
-    var valueOfSquare = sqr(a) + sqr(b) + sqr(c)
-    var outOfSquare = 2 * sqr(maxim) - valueOfSquare
+    val maxim = maxOf(a, b, c)
+    val valueOfSquare = sqr(a) + sqr(b) + sqr(c)
+    val outOfSquare = 2 * sqr(maxim) - valueOfSquare
     if (a < b + c && b < a + c && c < a + b) {
         return when {
             outOfSquare > 0.0 -> 2
@@ -183,6 +182,6 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
  * Если пересечения нет, вернуть -1.
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    if (b < c || d < a) return -1
-    else return min(b, d) - max(a, c)
+    return if (b < c || d < a) -1
+    else min(b, d) - max(a, c)
 }

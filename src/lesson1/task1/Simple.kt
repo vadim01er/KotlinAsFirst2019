@@ -2,6 +2,7 @@
 
 package lesson1.task1
 
+import java.lang.Math.pow
 import kotlin.math.*
 import kotlin.Double as Double1
 
@@ -121,15 +122,7 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Сколько денег будет на счету через 3 года (с учётом сложных процентов)?
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
-fun accountInThreeYears(initial: Int, percent: Int): Double1 {
-    var i = 1
-    var s = initial.toDouble()
-    while (i < 4) {
-        i++
-        s = (s + (s * percent / 100))
-    }
-    return s
-}
+fun accountInThreeYears(initial: Int, percent: Int): Double1 = initial * (1.0 + percent / 100.0).pow(3.0)
 
 /**
  * Простая
