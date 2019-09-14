@@ -72,7 +72,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var count = 0
-    var number = n
+    var number = abs(n)
     do {
         count++
         number /= 10
@@ -214,13 +214,13 @@ fun sin(x: Double, eps: Double): Double {
     var j = 1
     var answer = 0.0
     var num = x % (2 * PI)
-    var sqrnum = num * num
+    val sqrNum = num * num
     var numunder = 1.0
     while (num / numunder >= eps) {
         answer += j * num / numunder
         j *= -1
         i += 2
-        num *= sqrnum
+        num *= sqrNum
         numunder *= (i - 1) * i
     }
     return answer
@@ -240,14 +240,14 @@ fun cos(x: Double, eps: Double): Double {
     var j = 1
     var answer = 0.0
     var num = x % (2 * PI)
-    var sqrnum = num * num
+    val sqrNum = num * num
     var numunder = 1.0
     num = 1.0
     while (num / numunder > eps) {
         answer += j * num / numunder
         j *= -1
         i += 2
-        num *= sqrnum
+        num *= sqrNum
         numunder *= (i - 1) * i
     }
     return answer
