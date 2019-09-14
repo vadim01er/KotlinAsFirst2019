@@ -2,7 +2,7 @@
 
 package lesson1.task1
 
-import java.lang.Math.pow
+
 import kotlin.math.*
 import kotlin.Double as Double1
 

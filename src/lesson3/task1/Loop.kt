@@ -91,7 +91,7 @@ fun fib(n: Int): Int {
     var n1 = 1
     var n2 = 1
     var n0 = 0
-    for (i in 3..n){
+    for (i in 3..n) {
         n0 = n1 + n2
         n1 = n2
         n2 = n0
@@ -263,7 +263,6 @@ fun cos(x: Double, eps: Double): Double {
 fun revert(n: Int): Int {
     var number0 = n
     var numberOut = 0
-    var n10 = 1
     while (number0 > 0) {
         numberOut = numberOut * 10 + (number0 % 10)
         number0 /= 10
@@ -292,7 +291,7 @@ fun isPalindrome(n: Int): Boolean = revert(n) == n
  */
 fun hasDifferentDigits(n: Int): Boolean {
     var num = n / 10
-    var num1 = 0
+    var num1: Int
     val num2 = n % 10
     var count = 1
     val length = digitNumber(n)
@@ -316,7 +315,7 @@ fun hasDifferentDigits(n: Int): Boolean {
  */
 fun squareSequenceDigit(n: Int): Int {
     var num = 0
-    var num1 = 0
+    val num1: Int
     var sumSquare = 0
     var k = 0
     var count = 1
@@ -346,7 +345,7 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
     var count = 1
     var num = 0
-    var num1: Int
+    val num1: Int
     var sumFib = 0
     var k = 0
     while (sumFib < n) {
