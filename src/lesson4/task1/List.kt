@@ -116,12 +116,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double {
-    if (v.isEmpty()) return 0.0
-    val mass = mutableListOf<Double>()
-    for (i in 0 until v.size) mass.add(sqr(v[i]))
-    return sqrt(mass.sum())
-}
+fun abs(v: List<Double>): Double = v.map { it * it }.sum()
 
 
 /**
@@ -287,9 +282,9 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int{
-    val aBC = "abcdefghijklmnopqrstuvwxyz"
+    val aBC = "0123456789abcdefghijklmnopqrstuvwxyz"
     val list = mutableListOf<Int>()
-    for (elem in str) if (elem.toInt() > 9) list.add(aBC.indexOf(elem, 0) + 10) else list.add(elem.toInt())
+    for (elem in str) list.add(aBC.indexOf(elem, 0))
     return decimal(list, base)
 }
 
@@ -301,15 +296,20 @@ fun decimalFromString(str: String, base: Int): Int{
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): MutableList<String> {
+fun roman(n: Int): String {
     var num = n
-    var count = 0
     var i = 0
-    var listA = ListOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    var romeWorld = "MCMDCDCXCLXLXIXVIVI"
+    var listA = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
     var listB = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
-
-    return listA
+    var answer = ""
+    while (num > 0) {
+        while (num >= listB[i]) {
+            answer += listA[i]
+            num -= listB[i]
+        }
+        i++
+    }
+    return answer
 
 }
 
@@ -320,6 +320,4 @@ fun roman(n: Int): MutableList<String> {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String {
-
-}
+fun russian(n: Int): String = TODO()
