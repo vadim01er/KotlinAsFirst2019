@@ -282,9 +282,10 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int{
-    val aBC = "0123456789abcdefghijklmnopqrstuvwxyz"
+    val aBC = "abcdefghijklmnopqrstuvwxyz"
     val list = mutableListOf<Int>()
-    for (elem in str) list.add(aBC.indexOf(elem, 0))
+    for (elem in str)
+        list.add(if (elem in aBC) (aBC.indexOf(elem, 0) + 10) else elem.toString().toInt())
     return decimal(list, base)
 }
 
