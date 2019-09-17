@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import lesson1.task1.sqr
+import java.io.File.separator
 import kotlin.math.sqrt
 
 /**
@@ -282,7 +283,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int{
+fun decimalFromString(str: String, base: Int): Int {
     val aBC = "abcdefghijklmnopqrstuvwxyz"
     val list = mutableListOf<Int>()
     for (elem in str)
@@ -301,8 +302,8 @@ fun decimalFromString(str: String, base: Int): Int{
 fun roman(n: Int): String {
     var num = n
     var i = 0
-    var listA = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
-    var listB = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    val listA = listOf<String>("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val listB = listOf<Int>(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
     var answer = ""
     while (num > 0) {
         while (num >= listB[i]) {
@@ -322,4 +323,55 @@ fun roman(n: Int): String {
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val units = listOf<String>("один", "два", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять")
+    val dozens = listOf<String>(
+        "десять", "двадцать", "тридцать", "сорок", "пятьдесят",
+        "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    )
+    val hundrets = listOf<String>(
+        "сто", "двести", "триста", "четыреста", "пятьсот",
+        "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    )
+    val thousand = listOf<String>("тысяча", "тысячи", "тысяч")
+    val units1 = listOf<String>(
+        "одна", "две", "три", "четыре",
+        "пять", "шесть", "семь", "восемь", "девять"
+    )
+    val numIn11To19 = listOf(
+        "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+        "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
+    )
+
+    fun ofThree(n: Int): List<String> {
+        val ansOfThree = mutableListOf<String>()
+        if (n % 100 == 10) ansOfThree.add(0, dozens[0])
+        if (n % 100 in 11..19) ansOfThree.add(0, numIn11To19[n % 10 - 1])
+        else {
+            if (n % 10 != 0) ansOfThree.add(0, units[n % 10 - 1])
+            if (n % 100 / 10 != 0) ansOfThree.add(0, dozens[n % 100 / 10 - 1])
+        }
+        if (n / 100 != 0) ansOfThree.add(0, hundrets[n / 100 - 1])
+        return ansOfThree
+    }
+
+    val answer = mutableListOf<String>()
+    val listOfThousand = ofThree(n / 1000)
+    answer += listOfThousand
+    if (listOfThousand.isNotEmpty()){
+        when (listOfThousand.last()) {
+            "один" -> {
+                answer.remove("один")
+                answer.add("одна тысяча")
+            }
+            "два" -> {
+                answer.remove("два")
+                answer.add("две тысячи")
+            }
+            "три", "четыре" -> answer.add("тысячи")
+            else -> answer.add("тысяч")
+        }
+    }
+    answer += ofThree(n % 1000)
+    return answer.joinToString(separator = " ")
+}
