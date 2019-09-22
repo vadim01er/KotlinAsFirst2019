@@ -180,9 +180,15 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-
+    val map = mutableMapOf<String, List<Double>>()
+    stockPrices.map { (stock, price) ->
+        if (stock in map) map[stock] = map[stock]!! + price
+        else map[stock] = listOf(price)
+    }
+    val ans = mutableMapOf<String, Double>()
+    map.map { (key, value) -> ans[key] = value.sum() / value.size }
+    return ans
 }
-
 
 
 /**
@@ -211,7 +217,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    chars.toSet().intersect(word.toLowerCase().toSet()) == word.toLowerCase().toSet()
 
 /**
  * Средняя
@@ -225,7 +232,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean = TODO()
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val map = mutableMapOf<String, Int>()
+    list.map { if (it in map) map[it] = map[it]!! + 1 else map[it] = 1 }
+    return map.filterValues { it > 1 }
+}
 
 /**
  * Средняя
@@ -236,7 +247,16 @@ fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean = TODO()
+fun hasAnagrams(words: List<String>): Boolean {
+    if (words.isEmpty()) return false
+    words.map {
+        for (value in words - it) {
+            if ((it.toSet().intersect(value.toSet()) == it.toSet())) return true
+        }
+    }
+    return false
+}
+
 
 /**
  * Сложная
