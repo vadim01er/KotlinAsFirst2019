@@ -5,6 +5,7 @@ package lesson3.task1
 import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
@@ -105,18 +106,11 @@ fun fib(n: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int {
-    var a = m
-    var b = n
-    var k: Int
-    while (b > 0) {
-        a %= b
-        k = a
-        a = b
-        b = k
-    }
-    return m / (a) * n
-}
+
+fun gcd(m: Int, n: Int): Int = if (n == 0) m else gcd(n, m % n)
+
+fun lcm(m: Int, n: Int): Int = m / (gcd(m, n)) * n
+
 
 /**
  * Простая
@@ -145,18 +139,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = m
-    var b = n
-    var k: Int
-    while (b > 0) {
-        a %= b
-        k = a
-        a = b
-        b = k
-    }
-    return a == 1
-}
+fun isCoPrime(m: Int, n: Int): Boolean = (gcd(m, n) == 1)
 
 /**
  * Простая
@@ -216,7 +199,7 @@ fun sin(x: Double, eps: Double): Double {
     var num = x % (2 * PI)
     val sqrNum = num * num
     var numunder = 1.0
-    while (num / numunder >= eps) {
+    while (abs(num / numunder) >= eps) {
         answer += j * num / numunder
         j *= -1
         i += 2
@@ -313,24 +296,24 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
+
+fun sequenceDigit(n: Int, sum: Int, num: Int): Int {
+    val num1 = sum - n
+    var n10 = 1
+    for (i in 1..num1) n10 *= 10
+    return (num / n10) % 10
+}
+
 fun squareSequenceDigit(n: Int): Int {
     var num = 0
-    val num1: Int
     var sumSquare = 0
-    var k = 0
     var count = 1
     while (sumSquare < n) {
         num = sqr(count)
         sumSquare += digitNumber(num)
         count++
     }
-    num1 = sumSquare - n
-    if (num1 == 0) return num % 10
-    for (i in 1..num1) {
-        k = (num / 10) % 10
-        num /= 10
-    }
-    return k
+    return sequenceDigit(n, sumSquare, num)
 }
 
 /**
@@ -345,19 +328,11 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
     var count = 1
     var num = 0
-    val num1: Int
     var sumFib = 0
-    var k = 0
     while (sumFib < n) {
         num = fib(count)
         sumFib += digitNumber(num)
         count++
     }
-    num1 = sumFib - n
-    if (num1 == 0) return num % 10
-    for (i in 1..num1) {
-        k = num / 10 % 10
-        num /= 10
-    }
-    return k
+    return sequenceDigit(n, sumFib, num)
 }

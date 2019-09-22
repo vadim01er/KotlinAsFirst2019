@@ -159,18 +159,14 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val maxim = maxOf(a, b, c)
-    val valueOfSquare = sqr(a) + sqr(b) + sqr(c)
-    val outOfSquare = 2 * sqr(maxim) - valueOfSquare
-    if (a < b + c && b < a + c && c < a + b) {
-        return when {
-            outOfSquare > 0.0 -> 2
+    val outOfSquare = 2 * sqr(maxOf(a, b, c)) - (sqr(a) + sqr(b) + sqr(c))
+    return if (maxOf(a, b, c) * 2 - a - b - c <= 0) {
+        when {
+            (outOfSquare > 0.0) -> 2
             outOfSquare == 0.0 -> 1
             else -> 0
         }
-    }
-    return -1
-
+    } else return -1
 }
 
 /**

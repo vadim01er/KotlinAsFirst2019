@@ -240,3 +240,5 @@ class Tests {
         assertEquals("двенадцать", russian(12))
     }
 }
+
+
