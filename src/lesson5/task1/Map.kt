@@ -215,7 +215,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
             ans = k
         }
     }
-    return if (ans == "") null else ans
+    return if (coast == null) null else ans
 
 }
 
