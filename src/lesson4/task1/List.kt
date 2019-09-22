@@ -161,7 +161,7 @@ fun times(a: List<Int>, b: List<Int>): Int = (a zip b).map { (x, y) -> x * y }.s
  * Значение пустого многочлена равно 0 при любом x.
  */
 fun polynom(p: List<Int>, x: Int): Int =
-    p.mapIndexed { index, i -> (i * x.toDouble().pow(index)).toInt() }.sum()
+    p.mapIndexed { index, i -> ((i) * (x).toDouble().pow(index)).toInt() }.sum()
 
 /**
  * Средняя
@@ -304,7 +304,7 @@ fun roman(n: Int): String {
  */
 fun russian(n: Int): String {
     fun toNumberString(n: Int, thousand: Boolean): List<String> {
-        var ans = listOf<String>()
+        val ans = mutableListOf<String>()
         val units = listOf(
             "один", "два", "три", "четыре", "пять",
             "шесть", "семь", "восемь", "девять"
@@ -331,19 +331,19 @@ fun russian(n: Int): String {
                 return ans
             } else ans += dozens[digits[1] - 1]
         if (digits[2] > 0)
-            if (thousand && digits[2] < 3 && digits[1] != 1)
-                ans += num2[digits[2] - 1]
-            else ans += units[digits[2] - 1]
+            ans += if (thousand && digits[2] < 3 && digits[1] != 1)
+                num2[digits[2] - 1]
+            else units[digits[2] - 1]
         return ans
     }
 
-    var answer = listOf<String>()
+    val answer = mutableListOf<String>()
     answer += toNumberString(n / 1000, true)
     if (answer.isNotEmpty()) {
         answer += if (n / 1000 / 10 % 10 == 1) "тысяч"
         else when (n / 1000 % 10) {
             1 -> "тысяча"
-            2 -> "тысячи"
+            2, 3 -> "тысячи"
             else -> "тысяч"
         }
     }
