@@ -182,8 +182,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val map = mutableMapOf<String, List<Double>>()
     stockPrices.map { (stock, price) ->
-        if (stock in map) map[stock] = map[stock]!! + price
-        else map[stock] = listOf(price)
+        map[stock] = if (stock in map) map[stock]!! + price
+        else listOf(price)
     }
     val ans = mutableMapOf<String, Double>()
     map.map { (key, value) -> ans[key] = value.sum() / value.size }
