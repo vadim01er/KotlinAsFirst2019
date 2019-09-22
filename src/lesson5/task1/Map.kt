@@ -206,7 +206,18 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? = TODO()
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
+    var coast: Double? = null
+    var ans = ""
+    stuff.map { (k, v) ->
+        if (v.first == kind && (coast == null || coast!! > v.second)) {
+            coast = v.second
+            ans = k
+        }
+    }
+    return if (ans == "") null else ans
+
+}
 
 /**
  * Средняя
@@ -283,6 +294,7 @@ fun hasAnagrams(words: List<String>): Boolean {
  *        )
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+
 
 /**
  * Сложная
