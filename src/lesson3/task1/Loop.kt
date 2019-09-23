@@ -2,10 +2,8 @@
 
 package lesson3.task1
 
-import lesson1.task1.sqr
 import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.sqrt
 
 /**
@@ -297,24 +295,19 @@ fun hasDifferentDigits(n: Int): Boolean {
  * Использовать операции со строками в этой задаче запрещается.
  */
 
-fun sequenceDigit(n: Int, sum: Int, num: Int): Int {
-    val num1 = sum - n
+fun sequenceDigit(n: Int, operation: (Int) -> Int): Int {
+    var count = 0
+    var sum = 0
+    while (sum < n) {
+        count++
+        sum += digitNumber(operation(count))
+    }
     var n10 = 1
-    for (i in 1..num1) n10 *= 10
-    return (num / n10) % 10
+    for (i in 1..sum - n) n10 *= 10
+    return (operation(count) / n10) % 10
 }
 
-fun squareSequenceDigit(n: Int): Int {
-    var num = 0
-    var sumSquare = 0
-    var count = 1
-    while (sumSquare < n) {
-        num = sqr(count)
-        sumSquare += digitNumber(num)
-        count++
-    }
-    return sequenceDigit(n, sumSquare, num)
-}
+fun squareSequenceDigit(n: Int): Int = sequenceDigit(n) { it * it }
 
 /**
  * Сложная
@@ -325,14 +318,4 @@ fun squareSequenceDigit(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int {
-    var count = 1
-    var num = 0
-    var sumFib = 0
-    while (sumFib < n) {
-        num = fib(count)
-        sumFib += digitNumber(num)
-        count++
-    }
-    return sequenceDigit(n, sumFib, num)
-}
+fun fibSequenceDigit(n: Int): Int = sequenceDigit(n) { fib(it) }

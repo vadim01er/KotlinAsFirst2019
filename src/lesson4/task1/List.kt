@@ -160,11 +160,8 @@ fun times(a: List<Int>, b: List<Int>): Int = (a zip b).map { (x, y) -> x * y }.s
  * Коэффициенты многочлена заданы списком p: (p0, p1, p2, p3, ..., pN).
  * Значение пустого многочлена равно 0 при любом x.
  */
-fun polynom(p: List<Int>, x: Int): Int {
-    var map = 0
-    p.mapIndexed { index, i -> map += i * x.toDouble().pow(index).toInt() }
-    return map
-}
+fun polynom(p: List<Int>, x: Int): Int =
+    p.mapIndexed { index, i -> i * x.toDouble().pow(index).toInt() }.sum()
 
 /**
  * Средняя
@@ -267,11 +264,14 @@ fun decimal(digits: List<Int>, base: Int): Int =
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int {
-    val list = mutableListOf<Int>()
-    str.map { elem -> list.add(if (elem in 'a'..'z') (elem.toInt() - 87) else elem.toString().toInt()) }
-    return decimal(list, base)
+
+fun charToInt(i: Char): Int = when (i) {
+    in '0'..'9' -> i - '0'
+    else -> i - 'a' + 10
 }
+
+fun decimalFromString(str: String, base: Int): Int = decimal(str.map { charToInt(it) }, base)
+
 
 /**
  * Сложная
