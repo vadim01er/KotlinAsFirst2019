@@ -108,10 +108,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    a.map { (ka, va) -> if (b[ka] != va) return false }
-    return true
-}
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = a.all { (ka, va) -> b[ka] == va }
 
 
 /**
@@ -141,7 +138,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMa
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = b.toSet().intersect(a.toSet()).toList()
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = b.intersect(a).toList()
 
 
 /**
@@ -229,7 +226,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    chars.map { it.toLowerCase() }.toSet().intersect(word.toLowerCase().toSet()) == word.toLowerCase().toSet()
+    word.toSet() + chars.toSet() == chars.toSet()
 
 /**
  * Средняя
@@ -244,9 +241,10 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean =
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
 fun extractRepeats(list: List<String>): Map<String, Int> {
-    val map = mutableMapOf<String, Int>()
-    list.map { if (it in map) map[it] = map[it]!! + 1 else map[it] = 1 }
-    return map.filterValues { it > 1 }
+    val ans = mutableMapOf<String, Int>()
+    list.groupBy { it }.map { (k, v) -> if (v.size > 1) ans[k] = v.size }
+    return ans
+
 }
 
 /**
@@ -258,16 +256,7 @@ fun extractRepeats(list: List<String>): Map<String, Int> {
  * Например:
  *   hasAnagrams(listOf("тор", "свет", "рот")) -> true
  */
-fun hasAnagrams(words: List<String>): Boolean {
-    if (words.isEmpty()) return false
-    words.map {
-        for (value in words - it) {
-            if ((it.toSet().intersect(value.toSet()) == it.toSet())) return true
-        }
-    }
-    return false
-}
-
+fun hasAnagrams(words: List<String>): Boolean = words.map { it.toSortedSet() }.toSet().size != words.size
 
 /**
  * Сложная
@@ -293,7 +282,29 @@ fun hasAnagrams(words: List<String>): Boolean {
  *          "Mikhail" to setOf("Sveta", "Marat")
  *        )
  */
-fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> = TODO()
+fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
+    val listOfFriends = friends.keys
+    val ans = mutableMapOf<String, Set<String>>()
+
+    for (peep in listOfFriends) {
+        ans[peep] = setOf()
+        val booleanMap = mutableMapOf<String, Boolean>()
+        for (i in listOfFriends) booleanMap[i] = false
+        val que = mutableListOf(peep)
+        while (que.isNotEmpty()) {
+            val now = que.first()
+            que.removeAt(0)
+            booleanMap[now] = true
+            for (people in friends.getOrDefault(now, setOf())) {
+                if (peep != people) ans[peep] = ans[peep]!! + people
+                if (people !in listOfFriends) ans[people] = setOf()
+                else if (!booleanMap[people]!!) que.add(people)
+            }
+        }
+
+    }
+    return ans
+}
 
 
 /**
@@ -313,7 +324,13 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    list.mapIndexed { index, it ->
+        val k = number - it
+        if (list.indexOf(k) >= 0 && list.indexOf(k) != index) return Pair(index, list.indexOf(k))
+    }
+    return Pair(-1, -1)
+}
 
 /**
  * Очень сложная
