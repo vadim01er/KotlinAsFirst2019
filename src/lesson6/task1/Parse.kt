@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
+
 /**
  * Пример
  *
@@ -69,7 +72,19 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val mounth = listOf(
+    "января", "февраля", "марта", "апреля",
+    "мая", "июня", "июля", "августа",
+    "сентября", "октября", "ноября", "декабря"
+)
+
+fun dateStrToDigit(str: String): String {
+    val data = str.split(" ")
+    if (data.size != 3) return ""
+    if (mounth.indexOf(data[1]) == -1) return ""
+    if (data[0].toInt() > daysInMonth(mounth.indexOf(data[1]) + 1, data[2].toInt())) return ""
+    return "%02d.%02d.%d".format(data[0].toInt(), mounth.indexOf(data[1]) + 1, data[2].toInt())
+}
 
 /**
  * Средняя
@@ -81,7 +96,14 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val data = digital.split(".")
+    if (data.size != 3) return ""
+    if (data[1].toIntOrNull() == null || data[1].toInt() < 1) return ""
+    if (mounth[data[1].toInt() - 1] == "") return ""
+    if (data[0].toInt() > daysInMonth(data[1].toInt(), data[2].toInt())) return ""
+    return "${data[0].toInt()} ${mounth[data[1].toInt() - 1]} ${data[2]}"
+}
 
 /**
  * Средняя
@@ -97,7 +119,9 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String =
+    if (!Regex("""^(\+)?\d+(\(\d+\))?\d+""").matches(Regex("""[\s-]""").replace(phone, ""))) ""
+    else Regex("""[-()\s]""").replace(phone, "")
 
 /**
  * Средняя
@@ -109,7 +133,13 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var max1 = -1
+    if (Regex("""[^\d-%\s]""").find(jumps)?.value != null) return -1
+    val max = Regex("""\d+""").findAll(jumps)
+    max.forEach { if (it.value.toInt() > max1) max1 = it.value.toInt() }
+    return max1
+}
 
 /**
  * Сложная
@@ -122,7 +152,10 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (Regex("""[^\d-%\s+]""").find(jumps)?.value != null) return -1
+    return 1
+}
 
 /**
  * Сложная
@@ -133,8 +166,25 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
-
+fun plusMinus(expression: String): Int {
+    val expList = expression.split(" ")
+    require(expList[0] != "")
+    var ans = 0
+    var plusOrMinus = 1
+    expList.mapIndexed { index, s ->
+        if (index % 2 == 0) {
+            require(s.all { it in '0'..'9' })
+            ans += plusOrMinus * s.toInt()
+        } else {
+            plusOrMinus = when (s) {
+                "+" -> 1
+                "-" -> -1
+                else -> throw IllegalArgumentException()
+            }
+        }
+    }
+    return ans
+}
 /**
  * Сложная
  *
@@ -144,7 +194,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var countIndex = 0
+    val list = str.split(" ")
+    for (i in 0 until list.size - 1) {
+        if (list[i].toLowerCase() == list[i + 1].toLowerCase()) return countIndex
+        countIndex += list[i].length + 1
+    }
+    return -1
+}
 
 /**
  * Сложная
