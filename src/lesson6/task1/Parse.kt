@@ -73,7 +73,7 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-val mounth = listOf(
+val month = listOf(
     "января", "февраля", "марта", "апреля",
     "мая", "июня", "июля", "августа",
     "сентября", "октября", "ноября", "декабря"
@@ -82,9 +82,10 @@ val mounth = listOf(
 fun dateStrToDigit(str: String): String {
     val data = str.split(" ")
     if (data.size != 3) return ""
-    if (mounth.indexOf(data[1]) == -1) return ""
-    if (data[0].toInt() > daysInMonth(mounth.indexOf(data[1]) + 1, data[2].toInt())) return ""
-    return "%02d.%02d.%d".format(data[0].toInt(), mounth.indexOf(data[1]) + 1, data[2].toInt())
+    val mon = month.indexOf(data[1])
+    if (mon == -1) return ""
+    if (data[0].toInt() > daysInMonth(mon + 1, data[2].toInt())) return ""
+    return "%02d.%02d.%d".format(data[0].toInt(), mon + 1, data[2].toInt())
 }
 
 /**
@@ -101,9 +102,9 @@ fun dateDigitToStr(digital: String): String {
     val data = digital.split(".")
     if (data.size != 3) return ""
     if (data[1].toIntOrNull() == null || data[1].toInt() < 1) return ""
-    if (mounth[data[1].toInt() - 1] == "") return ""
+    if (data[1].toInt() !in 1..12) return ""
     if (data[0].toInt() > daysInMonth(data[1].toInt(), data[2].toInt())) return ""
-    return "${data[0].toInt()} ${mounth[data[1].toInt() - 1]} ${data[2]}"
+    return "${data[0].toInt()} ${month[data[1].toInt() - 1]} ${data[2]}"
 }
 
 /**
@@ -196,9 +197,9 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     var countIndex = 0
-    val list = str.split(" ")
+    val list = str.toLowerCase().split(" ")
     for (i in 0 until list.size - 1) {
-        if (list[i].toLowerCase() == list[i + 1].toLowerCase()) return countIndex
+        if (list[i] == list[i + 1]) return countIndex
         countIndex += list[i].length + 1
     }
     return -1
