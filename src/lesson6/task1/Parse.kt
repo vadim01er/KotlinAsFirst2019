@@ -3,6 +3,7 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
+import lesson5.task1.canBuildFrom
 import java.lang.IllegalArgumentException
 
 /**
@@ -137,7 +138,7 @@ fun bestLongJump(jumps: String): Int {
     var max1 = -1
     if (Regex("""[^\d-%\s]""").find(jumps)?.value != null) return -1
     val max = Regex("""\d+""").findAll(jumps)
-    max.forEach { if (it.value.toInt() > max1) max1 = it.value.toInt() }
+    max.forEach { max1 = maxOf(it.value.toInt(), max1) }
     return max1
 }
 
@@ -152,10 +153,8 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int {
-    if (Regex("""[^\d-%\s+]""").find(jumps)?.value != null) return -1
-    return 1
-}
+fun bestHighJump(jumps: String): Int = TODO()
+
 
 /**
  * Сложная
@@ -185,6 +184,7 @@ fun plusMinus(expression: String): Int {
     }
     return ans
 }
+
 /**
  * Сложная
  *
@@ -228,7 +228,29 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
+    if (!roman.matches(Regex("""M*(CM)?(D|CD)?C{0,3}(XC)?(L|XL)?X{0,3}(IX)?(V|IV)?I{0,3}"""))) {
+        return -1
+    }
+    val romans = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val number = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    var index = 0
+    var ans = 0
+    while (index <= roman.length - 1) {
+        val doubleR = if (index < roman.length - 1) {
+            romans.indexOf(roman.slice(index..index + 1))
+        } else -1
+        if (doubleR == -1) {
+            ans += number[romans.indexOf(roman[index].toString())]
+            index++
+        } else {
+            ans += number[doubleR]
+            index += 2
+        }
+    }
+    return ans
+}
 
 /**
  * Очень сложная
@@ -266,4 +288,49 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun find(commands: String, perPos: Int): Int {
+    var countOfBrackets = 0
+    for (i in perPos until commands.length) {
+        when (commands[i]) {
+            '[' -> countOfBrackets++
+            ']' -> countOfBrackets--
+        }
+        if (countOfBrackets == 0) return i
+    }
+    return -1
+}
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val setOfTrue = setOf('>', '<', '+', '-', '[', ']', ' ')
+    require(setOfTrue + commands.toSet() == setOfTrue)
+    var k = 0
+    for (i in commands) {
+        when (i) {
+            '[' -> k++
+            ']' -> k--
+        }
+    }
+    require(k == 0)
+    val listAnswer = MutableList(cells) { 0 }
+    var nowPos = cells / 2
+    var perPos = 0
+    var count = 0
+    val order = mutableListOf<Int>()
+    while ((count < limit) && (perPos < commands.length)) {
+        check(nowPos in 0 until cells)
+        when (commands[perPos]) {
+            '>' -> nowPos++
+            '<' -> nowPos--
+            '+' -> listAnswer[nowPos]++
+            '-' -> listAnswer[nowPos]--
+            '[' -> if (listAnswer[nowPos] == 0) perPos = find(commands, perPos) else order.add(perPos)
+            ']' -> if (listAnswer[nowPos] != 0) perPos = order.last()
+            else order.remove(order.last())
+        }
+        count++
+        perPos++
+    }
+    check(nowPos in 0 until cells)
+    return listAnswer
+}
