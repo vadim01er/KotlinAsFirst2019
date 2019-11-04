@@ -3,7 +3,6 @@
 package lesson6.task1
 
 import lesson2.task2.daysInMonth
-import lesson5.task1.canBuildFrom
 import java.lang.IllegalArgumentException
 
 /**
@@ -154,8 +153,17 @@ fun bestLongJump(jumps: String): Int {
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
-
+fun bestHighJump(jumps: String): Int {
+    if (Regex("""[^\d-+%\s]""").find(jumps)?.value != null) return -1
+    val list = jumps.split(" ")
+    var max = -1
+    if (list.size % 2 == 1) return -1
+    for (i in 0 until list.size step 2) {
+        if (list[i+1] == "+" && list[i].toInt() > max)
+            max = list[i].toInt()
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -216,7 +224,22 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val list = description.split("; ")
+    var maxName = ""
+    var maxValue = -1.0
+    list.map {
+        val map = it.split(" ")
+        if (map.size != 2) return ""
+        val num = map[1].toDoubleOrNull()
+        if (num == null || num < 0.0) return ""
+        if (num > maxValue) {
+            maxName = map[0]
+            maxValue = num
+        }
+    }
+    return maxName
+}
 
 /**
  * Сложная
