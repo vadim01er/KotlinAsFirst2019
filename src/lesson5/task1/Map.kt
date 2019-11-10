@@ -368,7 +368,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             val nameNow = items[i - 1].first
             when {
                 weightNow > w -> ans[i][w] = ans[i - 1][w]
-                ans[i - 1][w].first < ans[i - 1][w - weightNow].first + weightNow -> {
+                ans[i - 1][w].first < ans[i - 1][w - weightNow].first + price -> {
                     ans[i][w] = Pair(
                         ans[i - 1][w - weightNow].first + price,
                         (ans[i - 1][w - weightNow].second + nameNow).toMutableSet()
