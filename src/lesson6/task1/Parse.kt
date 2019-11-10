@@ -334,6 +334,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '[' -> k++
             ']' -> k--
         }
+        require(k >= 0)
     }
     require(k == 0)
     val listAnswer = MutableList(cells) { 0 }
