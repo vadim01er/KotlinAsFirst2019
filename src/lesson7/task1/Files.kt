@@ -273,7 +273,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             for (char in line) {
                 val change = new.getOrDefault(char.toLowerCase(), char.toString())
                 print(change)
-                it.write(if (char.isLowerCase()) change else change.capitalize())
+                it.write(if (char.isUpperCase()) change.capitalize() else change)
             }
             it.newLine()
         }
