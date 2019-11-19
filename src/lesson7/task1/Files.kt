@@ -366,7 +366,61 @@ Suspendisse <s>et elit in enim tempus iaculis</s>.
  * (Отступы и переносы строк в примере добавлены для наглядности, при решении задачи их реализовывать не обязательно)
  */
 fun markdownToHtmlSimple(inputName: String, outputName: String) {
-    TODO()
+    var markOfP = true
+    var markOfI = false
+    var markOfB = false
+    var markOfS = false
+    val set = setOf("**", "~~", "*")
+    val inputLine = File(inputName).readLines()
+    File(outputName).bufferedWriter().use {
+        it.write("<html><body><p>")
+        for (line in inputLine) {
+            if (line.isEmpty()) {
+                if (markOfP) it.write("</p><p>") else {
+                    it.write("</p>")
+                    markOfP = !markOfP
+                }
+            } else {
+                var i = 0
+                while (i < line.length - 1) {
+                    if (line[i].toString() + line[i + 1].toString() in set) {
+                        if (line[i].toString() + line[i + 1].toString() == "**") {
+                            if (markOfB) {
+                                markOfB = !markOfB
+                                it.write("</b>")
+                            } else {
+                                markOfB = !markOfB
+                                it.write("<b>")
+                            }
+                        } else {
+                            if (markOfS) {
+                                markOfS = !markOfS
+                                it.write("</s>")
+                            } else {
+                                markOfS = !markOfS
+                                it.write("<s>")
+                            }
+                        }
+                        i += 2
+                    } else if (line[i].toString() in set) {
+                        if (markOfI) {
+                            markOfI = !markOfI
+                            it.write("</i>")
+                        } else {
+                            markOfI = !markOfI
+                            it.write("<i>")
+                        }
+                        i++
+                    } else {
+                        it.write(line[i].toString())
+                        i++
+                    }
+                }
+                it.write(line.last().toString())
+            }
+        }
+        it.write("</p></body></html>")
+    }
 }
 
 /**
