@@ -383,37 +383,41 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
             } else {
                 var i = 0
                 while (i < line.length - 1) {
-                    if (line[i].toString() + line[i + 1].toString() in set) {
-                        if (line[i].toString() + line[i + 1].toString() == "**") {
-                            if (markOfB) {
-                                markOfB = !markOfB
-                                it.write("</b>")
-                            } else {
-                                markOfB = !markOfB
-                                it.write("<b>")
+                    when {
+                        line[i].toString() + line[i + 1].toString() in set -> {
+                            if (line[i].toString() + line[i + 1].toString() == "**") {
+                                if (markOfB) {
+                                    markOfB = !markOfB
+                                    it.write("</b>")
+                                } else {
+                                    markOfB = !markOfB
+                                    it.write("<b>")
+                                }
+                            } else if (line[i].toString() + line[i + 1].toString() == "~~"){
+                                if (markOfS) {
+                                    markOfS = !markOfS
+                                    it.write("</s>")
+                                } else {
+                                    markOfS = !markOfS
+                                    it.write("<s>")
+                                }
                             }
-                        } else {
-                            if (markOfS) {
-                                markOfS = !markOfS
-                                it.write("</s>")
+                            i += 2
+                        }
+                        (line[i].toString() in set) -> {
+                            if (markOfI) {
+                                markOfI = !markOfI
+                                it.write("</i>")
                             } else {
-                                markOfS = !markOfS
-                                it.write("<s>")
+                                markOfI = !markOfI
+                                it.write("<i>")
                             }
+                            i++
                         }
-                        i += 2
-                    } else if (line[i].toString() in set) {
-                        if (markOfI) {
-                            markOfI = !markOfI
-                            it.write("</i>")
-                        } else {
-                            markOfI = !markOfI
-                            it.write("<i>")
+                        else -> {
+                            it.write(line[i].toString())
+                            i++
                         }
-                        i++
-                    } else {
-                        it.write(line[i].toString())
-                        i++
                     }
                 }
                 it.write(line.last().toString())
