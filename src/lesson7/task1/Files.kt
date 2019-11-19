@@ -370,7 +370,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var markOfI = false
     var markOfB = false
     var markOfS = false
-    val set = setOf("**", "~~", "*")
+    val set = listOf("**", "~~", "*")
     val inputLine = File(inputName).readLines()
     File(outputName).bufferedWriter().use {
         it.write("<html><body><p>")
@@ -382,9 +382,9 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                 }
             } else {
                 var i = 0
-                while (i < line.length - 1) {
+                while (i < line.length) {
                     when {
-                        line[i].toString() + line[i + 1].toString() in set -> {
+                        i + 1 < line.length && line[i].toString() + line[i + 1].toString() in set -> {
                             if (line[i].toString() + line[i + 1].toString() == "**") {
                                 if (markOfB) {
                                     markOfB = !markOfB
@@ -393,7 +393,7 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                                     markOfB = !markOfB
                                     it.write("<b>")
                                 }
-                            } else if (line[i].toString() + line[i + 1].toString() == "~~"){
+                            } else {
                                 if (markOfS) {
                                     markOfS = !markOfS
                                     it.write("</s>")
@@ -420,7 +420,6 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
                         }
                     }
                 }
-                it.write(line.last().toString())
             }
         }
         it.write("</p></body></html>")
