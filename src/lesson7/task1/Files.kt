@@ -269,13 +269,10 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val new = mutableMapOf<Char, String>()
     dictionary.map { (k, v) -> new[k.toLowerCase()] = v.toLowerCase() }
     File(outputName).bufferedWriter().use {
-        for (line in File(inputName).readLines()) {
-            for (char in line) {
-                val change = new.getOrDefault(char.toLowerCase(), char.toString())
-                print(change)
-                it.write(if (char.isUpperCase()) change.capitalize() else change)
-            }
-            it.newLine()
+        val text = File(inputName).readText()
+        for (char in text) {
+            val change = new.getOrDefault(char.toLowerCase(), char.toString())
+            it.write(if (char.isUpperCase()) change.capitalize() else change)
         }
     }
 }
