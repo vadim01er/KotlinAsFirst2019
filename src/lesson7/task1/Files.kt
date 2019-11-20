@@ -370,19 +370,22 @@ fun markdownToHtmlSimple(inputName: String, outputName: String) {
     var markOfI = false
     var markOfB = false
     var markOfS = false
+    var mark = true
     val set = listOf("**", "~~", "*")
-    val inputLine = File(inputName).readLines().dropWhile { it == "" }
+    val inputLine = File(inputName).readLines().dropWhile { it.isEmpty() }
     File(outputName).bufferedWriter().use {
         it.write("<html><body><p>")
         for (line in inputLine) {
-            if (line.isEmpty()) {
+            if (line.isEmpty() && mark) {
                 if (markOfP) it.write("</p><p>") else {
                     it.write("</p>")
                     markOfP = !markOfP
                 }
+                mark = !mark
             } else {
                 var i = 0
                 while (i < line.length) {
+                    mark = !mark
                     when {
                         i + 1 < line.length && line[i].toString() + line[i + 1].toString() in set -> {
                             if (line[i].toString() + line[i + 1].toString() == "**") {
