@@ -169,8 +169,11 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
  * Пример: kingMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
-fun kingMoveNumber(start: Square, end: Square): Int =
-    max(abs(start.row - end.row), abs(start.column - end.column))
+fun kingMoveNumber(start: Square, end: Square): Int {
+    require(start.inside() && end.inside())
+    return max(abs(start.row - end.row), abs(start.column - end.column))
+}
+
 
 /**
  * Сложная
@@ -186,7 +189,20 @@ fun kingMoveNumber(start: Square, end: Square): Int =
  *          kingTrajectory(Square(3, 5), Square(6, 2)) = listOf(Square(3, 5), Square(4, 4), Square(5, 3), Square(6, 2))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun kingTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun kingTrajectory(start: Square, end: Square): List<Square> {
+    val ans = mutableListOf(start)
+    when (kingMoveNumber(start, end)) {
+        0 -> return ans
+        else -> {
+            while (start == end) {
+                val x = start.row - end.row
+                val y = start.column - end.column
+            }
+
+        }
+    }
+    return listOf(start)
+}
 
 /**
  * Сложная
