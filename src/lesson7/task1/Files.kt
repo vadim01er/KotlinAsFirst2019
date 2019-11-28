@@ -84,13 +84,12 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val seta = listOf('ж', 'ш', 'щ', 'ч')
     val mapa = mapOf('ы' to "и", 'я' to "а", 'ю' to "у")
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
             it.write(line[0].toString())
             for (i in 0 until line.length - 1) {
-                if (line[i].toLowerCase() in seta && line[i + 1].toLowerCase() in mapa)
+                if (line[i].toLowerCase() in listOf('ж', 'ш', 'щ', 'ч') && line[i + 1].toLowerCase() in mapa)
                     it.write(
                         mapa.getOrDefault(
                             line[i + 1],
@@ -128,7 +127,7 @@ fun centerFile(inputName: String, outputName: String) {
     }
     File(outputName).bufferedWriter().use {
         for (line in File(inputName).readLines()) {
-            it.write(String.format("%${(maxLen + line.trim().length) / 2}s", line.trim()))
+            it.write(" ".repeat((maxLen - line.trim().length) / 2) + line.trim())
             it.newLine()
         }
     }
@@ -170,9 +169,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         val listLine = mutableListOf<String>()
         var len = 0
         line.trim().split(" ").forEach { if (it != "") listLine.add(it) }
-        listLine.forEach {
-            len += it.length
-        }
+        listLine.forEach { len += it.length }
         if (len != 0) len += listLine.size - 1
         if (len > maxLen) maxLen = len
         lenOfLines.add(len)
@@ -195,7 +192,6 @@ fun alignFileByWidth(inputName: String, outputName: String) {
                     }
                     it.write(line.last())
                     it.newLine()
-
                 }
             }
         }
@@ -223,7 +219,7 @@ fun alignFileByWidth(inputName: String, outputName: String) {
 fun top20Words(inputName: String): Map<String, Int> {
     val mapa = mutableMapOf<String, Int>()
     for (line in File(inputName).readLines()) {
-        val listOfWords = Regex("""[a-zA-Zа-яА-ЯёЁ]+""").findAll(line, 0)
+        val listOfWords = Regex("""[a-zA-Zа-яА-ЯЁё]+""").findAll(line, 0)
         for (i in listOfWords)
             mapa[i.groupValues[0].toLowerCase()] = mapa.getOrDefault(i.groupValues[0].toLowerCase(), 0) + 1
     }
