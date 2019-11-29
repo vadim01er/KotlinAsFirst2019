@@ -359,11 +359,11 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     val ans = mutableListOf<MutableList<Int>>()
     val n = treasures.size
     val res = mutableSetOf<String>()
-    for (i in 0 until treasures.size) {
+    for (i in 0..n) {
         ans.add(mutableListOf())
         for (j in 0..capacity) ans[i].add(0)
     }
-    for (i in 1 until n) {
+    for (i in 1..n) {
         for (j in 0..capacity) {
             if (wAndv[i - 1].first > j) {
                 ans[i][j] = ans[i - 1][j]
