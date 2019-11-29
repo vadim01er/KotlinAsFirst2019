@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import kotlin.math.max
+
 /**
  * Пример
  *
@@ -369,7 +371,7 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
                 ans[i][j] = ans[i - 1][j]
             } else {
                 if (ans[i - 1][j] < (ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second)) {
-                    ans[i][j] = ans[i - 1][j - wAndv[i - 1].first] - wAndv[i - 1].second
+                    ans[i][j] = ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second
                     res.add(num[i - 1])
                 } else {
                     ans[i][j] = ans[i - 1][j]
