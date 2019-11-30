@@ -98,7 +98,23 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Для "правильного" отрезка выбирается одно из первых шести направлений,
      * для "неправильного" -- INCORRECT.
      */
-    fun direction(): Direction = TODO()
+    fun direction(): Direction {
+        return when {
+            begin.x == end.x -> when {
+                begin.y > end.y -> Direction.LEFT
+                else -> Direction.RIGHT
+            }
+            begin.y == end.y -> when {
+                begin.x > end.x -> Direction.DOWN_LEFT
+                else -> Direction.UP_RIGHT
+            }
+            abs(begin.x - end.x) == abs(begin.y - end.y) -> when {
+                begin.x - end.x > 0 -> Direction.DOWN_RIGHT
+                else -> Direction.DOWN_LEFT
+            }
+            else -> Direction.INCORRECT
+        }
+    }
 
     override fun equals(other: Any?) =
         other is HexSegment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)

@@ -191,30 +191,28 @@ fun kingMoveNumber(start: Square, end: Square): Int {
  */
 fun kingTrajectory(start: Square, end: Square): List<Square> {
     val ans = mutableListOf(start)
-    when (start) {
-        end -> return ans
-        else -> {
-            var now = start
-            while (now != end) {
-                val x = end.column - now.column
-                val y = end.row - now.row
-                now = Square(
-                    when {
-                        x == 0 -> now.column
-                        x < 0 -> now.column - 1
-                        else -> now.column + 1
-                    },
-                    when {
-                        y == 0 -> now.row
-                        y < 0 -> now.row - 1
-                        else -> now.row + 1
-                    }
-                )
-                ans.add(now)
-            }
+    if (start == end) return ans
+    else {
+        var now = start
+        while (now != end) {
+            val x = end.column - now.column
+            val y = end.row - now.row
+            now = Square(
+                when {
+                    x == 0 -> now.column
+                    x < 0 -> now.column - 1
+                    else -> now.column + 1
+                },
+                when {
+                    y == 0 -> now.row
+                    y < 0 -> now.row - 1
+                    else -> now.row + 1
+                }
+            )
+            ans.add(now)
         }
     }
-    return ans
+return ans
 }
 
 /**
