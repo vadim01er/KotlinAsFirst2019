@@ -179,13 +179,9 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val map = mutableMapOf<String, List<Double>>()
-    stockPrices.map { (stock, price) ->
-        map[stock] = if (stock in map) map[stock]!! + price
-        else listOf(price)
-    }
+    val groupStock = stockPrices.groupBy({ it.first }, { it.second })
     val ans = mutableMapOf<String, Double>()
-    map.map { (key, value) -> ans[key] = value.sum() / value.size }
+    groupStock.map { (k, v) -> ans[k] = v.sum() / v.size }
     return ans
 }
 
@@ -205,18 +201,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var coast: Double? = null
-    var ans = ""
-    stuff.map { (k, v) ->
-        if (v.first == kind && (coast == null || coast!! > v.second)) {
-            coast = v.second
-            ans = k
-        }
-    }
-    return if (coast == null) null else ans
-
-}
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
+    stuff.filter { (_, v) -> v.first == kind }.minBy { (_, v) -> v.second }?.key
 
 /**
  * Средняя
