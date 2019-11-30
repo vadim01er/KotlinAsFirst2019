@@ -101,15 +101,15 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
     fun direction(): Direction {
         return when {
             begin.x == end.x -> when {
-                begin.y > end.y -> Direction.LEFT
-                else -> Direction.RIGHT
-            }
-            begin.y == end.y -> when {
-                begin.x > end.x -> Direction.DOWN_LEFT
+                begin.y > end.y -> Direction.DOWN_LEFT
                 else -> Direction.UP_RIGHT
             }
+            begin.y == end.y -> when {
+                begin.x > end.x -> Direction.LEFT
+                else -> Direction.RIGHT
+            }
             abs(begin.x - end.x) == abs(begin.y - end.y) -> when {
-                begin.x - end.x > 0 -> Direction.DOWN_RIGHT
+                begin.x - end.x > 0 -> Direction.UP_RIGHT
                 else -> Direction.DOWN_LEFT
             }
             else -> Direction.INCORRECT
@@ -143,7 +143,7 @@ enum class Direction {
      * Вернуть направление, противоположное данному.
      * Для INCORRECT вернуть INCORRECT
      */
-    fun opposite(): Direction = TODO()
+    fun opposite(): Direction = if (this == INCORRECT) INCORRECT else values()[(ordinal + 3) % 6]
 
     /**
      * Средняя
@@ -155,7 +155,10 @@ enum class Direction {
      * Для направления INCORRECT бросить исключение IllegalArgumentException.
      * При решении этой задачи попробуйте обойтись без перечисления всех семи вариантов.
      */
-    fun next(): Direction = TODO()
+    fun next(): Direction {
+        require(this != INCORRECT)
+        return values()[(ordinal + 1) % 6]
+    }
 
     /**
      * Простая
@@ -163,7 +166,7 @@ enum class Direction {
      * Вернуть true, если данное направление совпадает с other или противоположно ему.
      * INCORRECT не параллельно никакому направлению, в том числе другому INCORRECT.
      */
-    fun isParallel(other: Direction): Boolean = TODO()
+    fun isParallel(other: Direction): Boolean = (other.opposite() == this || this == other) && this != INCORRECT
 }
 
 /**
@@ -179,7 +182,17 @@ enum class Direction {
  * 35, direction = UP_LEFT, distance = 2 --> 53
  * 45, direction = DOWN_LEFT, distance = 4 --> 05
  */
-fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
+fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
+    require(direction != Direction.INCORRECT)
+    return when (direction) {
+        Direction.RIGHT -> HexPoint(this.x + distance, this.y)
+        Direction.LEFT -> HexPoint(this.x - distance, this.y)
+        Direction.UP_RIGHT -> HexPoint(this.x, this.y + distance)
+        Direction.UP_LEFT -> HexPoint(this.x - distance, this.y + distance)
+        Direction.DOWN_RIGHT -> HexPoint(this.x + distance, this.y - distance)
+        else -> HexPoint(this.x, this.y - distance)
+    }
+}
 
 /**
  * Сложная
