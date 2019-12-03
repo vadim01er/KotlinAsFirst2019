@@ -350,13 +350,13 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
     for (i in 0..n) {
         ans.add(mutableListOf())
         res.add(mutableListOf())
-        for (j in 0..capacity) {
+        for (j in 0 until capacity) {
             ans[i].add(0)
             res[i].add(mutableSetOf())
         }
     }
     for (i in 1..n) {
-        for (j in 0..capacity) {
+        for (j in 0 until capacity) {
             if (wAndv[i - 1].first > j) {
                 ans[i][j] = ans[i - 1][j]
             } else {
@@ -369,5 +369,6 @@ fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<Strin
             }
         }
     }
-    return res[n][capacity]
+    print(res)
+    return res[n][capacity-1]
 }
