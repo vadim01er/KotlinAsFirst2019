@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.max
-
 /**
  * Пример
  *
@@ -342,33 +340,21 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val wAndv = treasures.values.toMutableList()
-    val num = treasures.keys.toList()
-    val ans = mutableListOf<MutableList<Int>>()
-    val n = treasures.size
-    val res = mutableListOf<MutableList<MutableSet<String>>>()
-    for (i in 0..n) {
-        ans.add(mutableListOf())
-        res.add(mutableListOf())
-        for (j in 0 until capacity) {
-            ans[i].add(0)
-            res[i].add(mutableSetOf())
+
+    val asn = mutableSetOf<String>()
+    val list = treasures.toList()
+    val mod = treasures.toList().sortedBy { it.second.second / it.second.first }
+    var w = 0
+    for (i in 1..treasures.size) {
+        println(i)
+        if (w + mod[treasures.size - i].second.first <= capacity) {
+            w += mod[treasures.size - i].second.first
+            asn.add(mod[treasures.size - i].first)
         }
     }
-    for (i in 1..n) {
-        for (j in 0 until capacity) {
-            if (wAndv[i - 1].first > j) {
-                ans[i][j] = ans[i - 1][j]
-            } else {
-                if (ans[i - 1][j] < (ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second)) {
-                    ans[i][j] = ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second
-                    res[i][j] = (res[i - 1][j - wAndv[i - 1].first] + num[i - 1]).toMutableSet()
-                } else {
-                    ans[i][j] = ans[i - 1][j]
-                }
-            }
-        }
-    }
-    print(res)
-    return res[n][capacity-1]
+
+    println(mod)
+    println(asn)
+    return asn
 }
+
