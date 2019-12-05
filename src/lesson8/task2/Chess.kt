@@ -147,7 +147,21 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun bishopTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun ghht(start: Square, end: Square): Square {
+    return Square(
+        (start.column - end.row + start.row - end.column) / 2,
+        (abs(start.row + end.row) - abs(start.column - end.column)) / 2
+    )
+}
+
+fun bishopTrajectory(start: Square, end: Square): List<Square> {
+    return when (bishopMoveNumber(start, end)) {
+        -1 -> listOf()
+        0 -> listOf(start)
+        1 -> listOf(start, end)
+        else -> listOf(start, ghht(start, end), end)
+    }
+}
 
 /**
  * Средняя
@@ -212,7 +226,7 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
             ans.add(now)
         }
     }
-return ans
+    return ans
 }
 
 /**
