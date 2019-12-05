@@ -89,7 +89,8 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Такими являются, например, отрезок 30-34 (горизонталь), 13-63 (прямая диагональ) или 51-24 (косая диагональ).
      * А, например, 13-26 не является "правильным" отрезком.
      */
-    fun isValid(): Boolean = begin.x == end.x || begin.y == end.y || abs(begin.x - end.x) == abs(begin.y - end.y)
+    fun isValid(): Boolean =
+        ((begin.x == end.x || begin.y == end.y || abs(begin.x - end.x) == abs(begin.y - end.y)) && (begin != end))
 
 
     /**
@@ -102,7 +103,7 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
     fun direction(): Direction {
         return when {
             begin.x == end.x -> when {
-                begin.y > end.y -> Direction.DOWN_LEFT
+                begin.y > end.y -> Direction.DOWN_RIGHT
                 else -> Direction.UP_RIGHT
             }
             begin.y == end.y -> when {
@@ -110,7 +111,7 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
                 else -> Direction.RIGHT
             }
             abs(begin.x - end.x) == abs(begin.y - end.y) -> when {
-                begin.x - end.x > 0 -> Direction.UP_RIGHT
+                begin.x - end.x > 0 -> Direction.UP_LEFT
                 else -> Direction.DOWN_LEFT
             }
             else -> Direction.INCORRECT
