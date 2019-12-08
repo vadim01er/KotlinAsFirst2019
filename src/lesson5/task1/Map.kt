@@ -340,36 +340,32 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val wAndv = treasures.values.toMutableList()
-    val num = treasures.keys.toList()
-    val ans = mutableListOf<MutableList<Int>>()
+    val wAndv = treasures.values.toList()
+    val name = treasures.keys.toList()
     val n = treasures.size
-    val res = mutableListOf<MutableList<MutableSet<String>>>()
+    val ans = mutableListOf<MutableList<Pair<Int, MutableSet<String>>>>()
     for (i in 0..n) {
         ans.add(mutableListOf())
-        res.add(mutableListOf())
         for (j in 0..capacity) {
-            ans[i].add(0)
-            res[i].add(mutableSetOf())
+            ans[i].add(Pair(0, mutableSetOf()))
         }
     }
     for (i in 1..n) {
         for (j in 0..capacity) {
             if (j >= wAndv[i - 1].first) {
-                if (ans[i - 1][j] > ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second){
+                if (ans[i - 1][j].first > ans[i - 1][j - wAndv[i - 1].first].first + wAndv[i - 1].second) {
                     ans[i][j] = ans[i - 1][j]
-                    res[i][j] = res[i - 1][j]
                 } else {
-                    ans[i][j] = ans[i - 1][j - wAndv[i - 1].first] + wAndv[i - 1].second
-                    res[i][j] = (res[i - 1][j - wAndv[i - 1].first] + num[i - 1]).toMutableSet()
+                    ans[i][j] = Pair(
+                        ans[i - 1][j - wAndv[i - 1].first].first + wAndv[i - 1].second,
+                        (ans[i - 1][j - wAndv[i - 1].first].second + name[i - 1]).toMutableSet()
+                    )
                 }
             } else {
                 ans[i][j] = ans[i - 1][j]
-                res[i][j] = res[i - 1][j]
             }
         }
     }
-    print(res)
-    return res[n][capacity]
+    return ans[n][capacity].second
 }
 
