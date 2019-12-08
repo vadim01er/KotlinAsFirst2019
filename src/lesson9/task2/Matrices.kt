@@ -60,7 +60,60 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    var maxH = height - 1
+    var maxW = width - 1
+    var minH = 0
+    var minW = 0
+    var count = 1
+    val result = createMatrix(height, width, 0)
+    var move = 1
+    var i = 0
+    var j = 0
+    for (count in 1..height * width) {
+        println(Pair(i, j))
+        when (move) {
+            1 -> {
+                result[i, j] = count
+                j++
+                if (j == maxW) {
+                    maxW--
+                    move = 2
+                }
+            }
+            2 -> {
+                result[i, j] = count
+                i++
+                if (i == maxH) {
+                    maxH--
+                    move = 3
+                }
+            }
+            3 -> {
+                result[i, j] = count
+                j--
+                if (j == minW) {
+                    minW++
+                    move = 4
+                }
+            }
+            4 -> {
+                result[i, j] = count
+                i--
+                if (i == minH) {
+                    minH++
+                    move = 1
+
+                }
+            }
+        }
+
+        println(count)
+        println(Pair(i, j))
+        println()
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -119,7 +172,24 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    require(matrix.height == matrix.width)
+    val trueSet = (1..matrix.height).toSet()
+    for (i in 0 until matrix.height) {
+        val nowSet = mutableSetOf<Int>()
+        for (j in 0 until matrix.width)
+            nowSet.add(matrix[i, j])
+        if (nowSet != trueSet) return false
+    }
+
+    for (j in 0 until matrix.width) {
+        val nowSet = mutableSetOf<Int>()
+        for (i in 0 until matrix.height)
+            nowSet.add(matrix[i, j])
+        if (nowSet != trueSet) return false
+    }
+    return true
+}
 
 /**
  * Средняя
