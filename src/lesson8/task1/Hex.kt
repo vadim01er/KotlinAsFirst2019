@@ -41,9 +41,9 @@ data class HexPoint(val x: Int, val y: Int) {
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
     fun distance(other: HexPoint): Int {
-        val xd = abs(x - other.x)
-        val yd = abs(y - other.y)
-        return if (xd == yd) xd + 1 else max(xd, yd)
+        val xd = x - other.x
+        val yd = y - other.y
+        return (abs(xd) + abs(yd) + abs(xd + yd)) / 2
     }
 
     override fun toString(): String = "$y.$x"
@@ -67,7 +67,10 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      * и другим шестиугольником B с центром в 26 и радиуоом 2 равно 2
      * (расстояние между точками 32 и 24)
      */
-    fun distance(other: Hexagon): Int = center.distance(other.center) - (radius + other.radius)
+    fun distance(other: Hexagon): Int {
+        val d = center.distance(other.center) - (radius + other.radius)
+        return if (d > 0) d else 0
+    }
 
     /**
      * Тривиальная
@@ -102,18 +105,18 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      */
     fun direction(): Direction {
         return when {
-            begin.x == end.x -> when {
-                begin.y > end.y -> Direction.DOWN_RIGHT
-                else -> Direction.UP_RIGHT
-            }
-            begin.y == end.y -> when {
-                begin.x > end.x -> Direction.LEFT
-                else -> Direction.RIGHT
-            }
-            abs(begin.x - end.x) == abs(begin.y - end.y) -> when {
-                begin.x - end.x > 0 -> Direction.UP_LEFT
-                else -> Direction.DOWN_LEFT
-            }
+            begin.x == end.x ->
+                if (begin.y > end.y) Direction.DOWN_LEFT
+                else Direction.UP_RIGHT
+
+            begin.y == end.y ->
+                if (begin.x > end.x) Direction.LEFT
+                else Direction.RIGHT
+
+            abs(begin.x - end.x) == abs(begin.y - end.y) ->
+                if (begin.x - end.x > 0) Direction.UP_LEFT
+                else Direction.DOWN_RIGHT
+
             else -> Direction.INCORRECT
         }
     }
