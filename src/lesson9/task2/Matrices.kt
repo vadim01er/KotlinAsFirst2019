@@ -65,7 +65,6 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var maxW = width - 1
     var minH = 0
     var minW = 0
-    var count = 1
     val result = createMatrix(height, width, 0)
     var move = 1
     var i = 0
@@ -103,14 +102,9 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
                 if (i == minH) {
                     minH++
                     move = 1
-
                 }
             }
         }
-
-        println(count)
-        println(Pair(i, j))
-        println()
     }
     return result
 }

@@ -53,7 +53,7 @@ fun <E> createMatrix(height: Int, width: Int, e: E): Matrix<E> {
  */
 class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : Matrix<E> {
 
-    private val matrixData = List(height) { MutableList(width) { e } }
+    private val matrixData = MutableList(height) { MutableList(width) { e } }
 
     override fun get(row: Int, column: Int): E =
         if (row in 0..height && column in 0..width) matrixData[row][column] else throw IllegalAccessException()
