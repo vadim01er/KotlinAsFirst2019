@@ -2,6 +2,7 @@
 
 package lesson8.task2
 
+import lesson9.task1.createMatrix
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -147,19 +148,23 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  *          bishopTrajectory(Square(1, 3), Square(6, 8)) = listOf(Square(1, 3), Square(6, 8))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun ghht(start: Square, end: Square): Square {
-    return Square(
-        (start.column - end.row + start.row - end.column) / 2,
-        (abs(start.row + end.row) - abs(start.column - end.column)) / 2
-    )
-}
+fun find(start: Square, end: Square): Square = Square(
+    abs(start.column + end.row - start.row + end.column) / 2,
+    abs(start.row + end.row - start.column + end.column) / 2
+)
+
 
 fun bishopTrajectory(start: Square, end: Square): List<Square> {
     return when (bishopMoveNumber(start, end)) {
         -1 -> listOf()
         0 -> listOf(start)
         1 -> listOf(start, end)
-        else -> listOf(start, ghht(start, end), end)
+        else -> listOf(
+            start,
+            if (find(start, end).inside()) find(start, end)
+            else find(end, start),
+            end
+        )
     }
 }
 
@@ -252,7 +257,34 @@ fun kingTrajectory(start: Square, end: Square): List<Square> {
  * Пример: knightMoveNumber(Square(3, 1), Square(6, 3)) = 3.
  * Конь может последовательно пройти через клетки (5, 2) и (4, 4) к клетке (6, 3).
  */
-fun knightMoveNumber(start: Square, end: Square): Int = TODO()
+fun knightFind(start: Square, end: Square): MutableList<Square> {
+    val field = createMatrix(9, 9, false)
+    field[start.column, start.row] = true
+    val dx = listOf(1, 1, -1, -1, 2, 2, -2, -2)
+    val dy = listOf(2, -2, 2, -2, 1, -1, 1, -1)
+    var moves = mutableListOf(start)
+    val ways = mutableListOf<Pair<Square, MutableList<Square>>>(Pair(start, moves))
+    while (ways.isNotEmpty()) {
+        val now = ways[0].first
+        moves = ways[0].second
+        if (now == end) break
+        ways.removeAt(0)
+        for (i in 0..7) {
+            val addSquare = Square(now.column + dx[i], now.row + dy[i])
+            if (addSquare.inside() &&
+                !field[addSquare.column, addSquare.row]
+            ) {
+                val moves2 = (moves + addSquare).toMutableList()
+                ways.add(Pair(addSquare, moves2))
+                field[addSquare.column, addSquare.row] = true
+            }
+        }
+    }
+    return moves
+}
+
+
+fun knightMoveNumber(start: Square, end: Square): Int = knightFind(start, end).size - 1
 
 /**
  * Очень сложная
@@ -274,4 +306,5 @@ fun knightMoveNumber(start: Square, end: Square): Int = TODO()
  *
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun knightTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun knightTrajectory(start: Square, end: Square): List<Square> =
+    knightFind(start, end)
