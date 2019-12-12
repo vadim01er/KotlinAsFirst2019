@@ -161,8 +161,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
         1 -> listOf(start, end)
         else -> listOf(
             start,
-            if (find(start, end).inside()) find(start, end)
-            else find(end, start),
+            if (find(start, end).inside()) find(start, end) else find(end, start),
             end
         )
     }

@@ -2,9 +2,8 @@
 
 package lesson8.task1
 
-import java.util.logging.Level
+
 import kotlin.math.abs
-import kotlin.math.max
 
 /**
  * Точка (гекс) на шестиугольной сетке.
@@ -78,6 +77,7 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      * Вернуть true, если заданная точка находится внутри или на границе шестиугольника
      */
     fun contains(point: HexPoint): Boolean = center.distance(point) <= radius
+
 }
 
 /**
@@ -103,8 +103,9 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Для "правильного" отрезка выбирается одно из первых шести направлений,
      * для "неправильного" -- INCORRECT.
      */
-    fun direction(): Direction {
-        return when {
+    fun direction(): Direction =
+        when {
+            !HexSegment(begin, end).isValid() -> Direction.INCORRECT
             begin.x == end.x ->
                 if (begin.y > end.y) Direction.DOWN_LEFT
                 else Direction.UP_RIGHT
@@ -119,7 +120,6 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
 
             else -> Direction.INCORRECT
         }
-    }
 
     override fun equals(other: Any?) =
         other is HexSegment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
