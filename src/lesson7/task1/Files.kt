@@ -2,9 +2,8 @@
 
 package lesson7.task1
 
-import kotlinx.html.dom.write
+
 import java.io.File
-import kotlin.math.max
 
 /**
  * Пример
@@ -167,18 +166,16 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     val output = mutableListOf<List<String>>()
     for (line in File(inputName).readLines()) {
         val listLine = mutableListOf<String>()
-        var len = 0
-        line.trim().split(" ").forEach { if (it != "") listLine.add(it) }
-        listLine.forEach { len += it.length }
-        if (len != 0) len += listLine.size - 1
+        val len = line.trim().length
+        line.trim().split(" ").forEach { if (it != " ") listLine.add(it) }
         if (len > maxLen) maxLen = len
         lenOfLines.add(len)
         if (listLine.isEmpty()) output.add(listOf("")) else output.add(listLine)
     }
     File(outputName).bufferedWriter().use {
         output.mapIndexed { index, line ->
-            when {
-                line.size == 1 -> {
+            when (line.size) {
+                1 -> {
                     it.write(line[0])
                     it.newLine()
                 }
@@ -265,8 +262,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val new = mutableMapOf<Char, String>()
     dictionary.map { (k, v) -> new[k.toLowerCase()] = v.toLowerCase() }
     File(outputName).bufferedWriter().use {
-        val text = File(inputName).readText()
-        for (char in text) {
+        for (char in File(inputName).readText()) {
             val change = new.getOrDefault(char.toLowerCase(), char.toString())
             it.write(if (char.isUpperCase()) change.capitalize() else change)
         }
@@ -308,7 +304,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     }
     File(outputName).bufferedWriter().use { writer ->
         val filtList = list.filter { it.length == maxLen }
-        for (i in 0 until filtList.size)
+        for (i in filtList.indices)
             when {
                 i == 0 -> writer.write(filtList[i])
                 filtList[i].length == maxLen -> writer.write(", " + filtList[i])
