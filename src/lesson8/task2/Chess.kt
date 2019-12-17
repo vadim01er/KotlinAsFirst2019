@@ -3,6 +3,7 @@
 package lesson8.task2
 
 import lesson9.task1.createMatrix
+import java.lang.IllegalArgumentException
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -149,8 +150,8 @@ fun bishopMoveNumber(start: Square, end: Square): Int {
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
 fun find(start: Square, end: Square): Square = Square(
-    abs(start.column + end.row - start.row + end.column) / 2,
-    abs(start.row + end.row - start.column + end.column) / 2
+    (start.column + end.row - start.row + end.column) / 2,
+    (start.row + end.row - start.column + end.column) / 2
 )
 
 
@@ -189,7 +190,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  */
 fun kingMoveNumber(start: Square, end: Square): Int =
     if (start.inside() && end.inside()) max(abs(start.row - end.row), abs(start.column - end.column))
-    else throw IllegalAccessException()
+    else throw IllegalArgumentException()
 
 
 /**
