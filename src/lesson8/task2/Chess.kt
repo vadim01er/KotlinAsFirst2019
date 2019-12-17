@@ -189,7 +189,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  * Король может последовательно пройти через клетки (4, 2) и (5, 2) к клетке (6, 3).
  */
 fun kingMoveNumber(start: Square, end: Square): Int =
-    if (start.inside() && end.inside()) max(abs(start.row - end.row), abs(start.column - end.column))
+    if (start.inside() && end.inside() && start != end) max(abs(start.row - end.row), abs(start.column - end.column))
     else throw IllegalArgumentException()
 
 

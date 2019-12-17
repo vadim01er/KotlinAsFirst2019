@@ -2,6 +2,8 @@
 
 package lesson9.task1
 
+import java.lang.IllegalArgumentException
+
 /**
  * Ячейка матрицы: row = ряд, column = колонка
  */
@@ -16,6 +18,7 @@ interface Matrix<E> {
 
     /** Ширина */
     val width: Int
+
 
     /**
      * Доступ к ячейке.
@@ -55,17 +58,19 @@ class MatrixImpl<E>(override val height: Int, override val width: Int, e: E) : M
 
     private val matrixData = MutableList(height) { MutableList(width) { e } }
 
+
     override fun get(row: Int, column: Int): E =
-        if (row in 0..height && column in 0..width) matrixData[row][column] else throw IllegalAccessException()
+        if (row in 0..height && column in 0..width) matrixData[row][column] else throw IllegalArgumentException()
 
     override fun get(cell: Cell): E = get(cell.row, cell.column)
 
     override fun set(row: Int, column: Int, value: E) =
-        if (row in 0..height && column in 0..width) matrixData[row][column] = value else throw IllegalAccessException()
+        if (row in 0..height && column in 0..width) matrixData[row][column] = value else throw IllegalArgumentException()
 
     override fun set(cell: Cell, value: E) = set(cell.row, cell.column, value)
 
-    override fun equals(other: Any?) = TODO()
+    override fun equals(other: Any?) =
+        other is MatrixImpl<*> && other.width == width && other.height == height && other.matrixData == matrixData
 
     override fun toString(): String =
         matrixData.joinToString(separator = ",\n", prefix = "[", postfix = "]")

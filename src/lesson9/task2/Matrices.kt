@@ -4,6 +4,9 @@ package lesson9.task2
 
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -69,8 +72,7 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var move = 1
     var i = 0
     var j = 0
-    for (count in 1..height * width) {
-        println(Pair(i, j))
+    for (count in 1..height * width)
         when (move) {
             1 -> {
                 result[i, j] = count
@@ -105,7 +107,6 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
                 }
             }
         }
-    }
     return result
 }
 
@@ -123,7 +124,15 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> {
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val mat = createMatrix(height, width, 1)
+    val h = height
+    val w = width
+    for (i in 0 until height)
+        for (j in 0 until width)
+            mat[i, j] = min(min(i + 1, h - i), min(j + 1, w - j))
+    return mat
+}
 
 /**
  * Сложная
@@ -202,7 +211,27 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+
+
+fun Matrix<*>.inMatrix(row: Int, column: Int): Boolean =
+    (row in 0 until height) && (column in 0 until width)
+
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    val dh = listOf(1, 1, -1, -1, 0, 0, -1, 1)
+    val dw = listOf(1, 0, -1, 0, -1, 1, 1, -1)
+    val mat = createMatrix(matrix.height, matrix.width, 0)
+    for (i in 0 until mat.height)
+        for (j in 0 until mat.width) {
+            var sum = mat[i, j]
+            for (k in dh.indices) {
+                val nowH = dh[k] + i
+                val nowW = dw[k] + j
+                if (matrix.inMatrix(nowH, nowW)) sum += matrix[nowH, nowW]
+                mat[i, j] = sum
+            }
+        }
+    return mat
+}
 
 /**
  * Средняя
