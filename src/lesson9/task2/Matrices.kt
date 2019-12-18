@@ -66,7 +66,7 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
 fun generateSpiral(height: Int, width: Int): Matrix<Int> {
     var maxH = height - 1
     var maxW = width - 1
-    var minH = 0
+    var minH = 1
     var minW = 0
     val result = createMatrix(height, width, 0)
     var move = 1
