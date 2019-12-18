@@ -190,7 +190,7 @@ fun bishopTrajectory(start: Square, end: Square): List<Square> {
  */
 fun kingMoveNumber(start: Square, end: Square): Int =
     if (start.inside() && end.inside()) max(abs(start.row - end.row), abs(start.column - end.column))
-    else throw IllegalArgumentException()
+    else throw IllegalArgumentException("null")
 
 
 /**
