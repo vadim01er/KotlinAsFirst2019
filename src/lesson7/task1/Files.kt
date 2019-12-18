@@ -165,10 +165,10 @@ fun alignFileByWidth(inputName: String, outputName: String) {
     var maxLen = -1
     val output = mutableListOf<List<String>>()
     for (line in File(inputName).readLines()) {
-        val listLine = line.trim().split(" ").filter { it != " " }
-        val len = line.trim().length
-        if (len > maxLen) maxLen = len
+        val listLine = line.trim().split(" ").filter { it != "" }
+        val len = listLine.fold(0) { now, it -> now + it.length } + listLine.size - 1
         lenOfLines.add(len)
+        if (len > maxLen) maxLen = len
         if (listLine.isEmpty()) output.add(listOf("")) else output.add(listLine)
     }
     File(outputName).bufferedWriter().use {
