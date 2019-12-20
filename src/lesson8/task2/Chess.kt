@@ -40,7 +40,7 @@ data class Square(val column: Int, val row: Int) {
 fun square(notation: String): Square {
     require(notation.length == 2)
     require(notation[0] in 'a'..'h' && notation[1] in '1'..'8')
-    return Square(notation[0].toInt() - 96, notation[1].toInt() - 48)
+    return Square(notation[0] - 'a' + 1, notation[1] - '0')
 }
 
 /**
@@ -91,11 +91,8 @@ fun rookMoveNumber(start: Square, end: Square): Int {
  */
 fun rookTrajectory(start: Square, end: Square): List<Square> {
     val ans = mutableSetOf(start)
-    when (rookMoveNumber(start, end)) {
-        2 -> ans.addAll(setOf(Square(start.column, end.row), end))
-        else -> ans.add(end)
-    }
-    return ans.toList()
+    if (rookMoveNumber(start, end) == 2) ans.add(Square(start.column, end.row))
+    return (ans + end).toList()
 }
 
 /**
@@ -211,25 +208,23 @@ fun kingMoveNumber(start: Square, end: Square): Int {
 fun kingTrajectory(start: Square, end: Square): List<Square> {
     val ans = mutableListOf(start)
     if (start == end) return ans
-    else {
-        var now = start
-        while (now != end) {
-            val x = end.column - now.column
-            val y = end.row - now.row
-            now = Square(
-                when {
-                    x == 0 -> now.column
-                    x < 0 -> now.column - 1
-                    else -> now.column + 1
-                },
-                when {
-                    y == 0 -> now.row
-                    y < 0 -> now.row - 1
-                    else -> now.row + 1
-                }
-            )
-            ans.add(now)
-        }
+    var now = start
+    while (now != end) {
+        val x = end.column - now.column
+        val y = end.row - now.row
+        now = Square(
+            when {
+                x == 0 -> now.column
+                x < 0 -> now.column - 1
+                else -> now.column + 1
+            },
+            when {
+                y == 0 -> now.row
+                y < 0 -> now.row - 1
+                else -> now.row + 1
+            }
+        )
+        ans.add(now)
     }
     return ans
 }
@@ -263,7 +258,7 @@ fun knightFind(start: Square, end: Square): MutableList<Square> {
     val dx = listOf(1, 1, -1, -1, 2, 2, -2, -2)
     val dy = listOf(2, -2, 2, -2, 1, -1, 1, -1)
     var moves = mutableListOf(start)
-    val ways = mutableListOf<Pair<Square, MutableList<Square>>>(Pair(start, moves))
+    val ways = mutableListOf(Pair(start, moves))
     while (ways.isNotEmpty()) {
         val now = ways[0].first
         moves = ways[0].second
@@ -285,7 +280,7 @@ fun knightFind(start: Square, end: Square): MutableList<Square> {
 
 
 fun knightMoveNumber(start: Square, end: Square): Int =
-    if (start.inside() && end.inside()) knightFind(start, end).size - 1 else throw IllegalAccessException()
+    if (start.inside() && end.inside()) knightFind(start, end).size - 1 else throw IllegalArgumentException()
 
 /**
  * Очень сложная

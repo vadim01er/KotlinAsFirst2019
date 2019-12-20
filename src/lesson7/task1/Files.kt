@@ -301,14 +301,7 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
             if (maxLen < line.length) maxLen = line.length
         }
     }
-    File(outputName).bufferedWriter().use { writer ->
-        val filtList = list.filter { it.length == maxLen }
-        for (i in filtList.indices)
-            when {
-                i == 0 -> writer.write(filtList[i])
-                filtList[i].length == maxLen -> writer.write(", " + filtList[i])
-            }
-    }
+    File(outputName).writeText(list.filter { it.length == maxLen }.joinToString(separator = ", "))
 }
 
 /**
