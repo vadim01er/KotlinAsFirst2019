@@ -4,6 +4,9 @@ package lesson9.task2
 
 import lesson9.task1.Matrix
 import lesson9.task1.createMatrix
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -60,7 +63,52 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    var maxH = height - 1
+    var maxW = width - 1
+    var minH = 1
+    var minW = 0
+    val result = createMatrix(height, width, 0)
+    var move = 1
+    var i = 0
+    var j = 0
+    for (count in 1..height * width)
+        when (move) {
+            1 -> {
+                result[i, j] = count
+                j++
+                if (j == maxW) {
+                    maxW--
+                    move = 2
+                }
+            }
+            2 -> {
+                result[i, j] = count
+                i++
+                if (i == maxH) {
+                    maxH--
+                    move = 3
+                }
+            }
+            3 -> {
+                result[i, j] = count
+                j--
+                if (j == minW) {
+                    minW++
+                    move = 4
+                }
+            }
+            4 -> {
+                result[i, j] = count
+                i--
+                if (i == minH) {
+                    minH++
+                    move = 1
+                }
+            }
+        }
+    return result
+}
 
 /**
  * Сложная
@@ -76,7 +124,15 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val mat = createMatrix(height, width, 1)
+    val h = height
+    val w = width
+    for (i in 0 until height)
+        for (j in 0 until width)
+            mat[i, j] = min(min(i + 1, h - i), min(j + 1, w - j))
+    return mat
+}
 
 /**
  * Сложная
@@ -119,7 +175,24 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    require(matrix.height == matrix.width)
+    val trueSet = (1..matrix.height).toSet()
+    for (i in 0 until matrix.height) {
+        val nowSet = mutableSetOf<Int>()
+        for (j in 0 until matrix.width)
+            nowSet.add(matrix[i, j])
+        if (nowSet != trueSet) return false
+    }
+
+    for (j in 0 until matrix.width) {
+        val nowSet = mutableSetOf<Int>()
+        for (i in 0 until matrix.height)
+            nowSet.add(matrix[i, j])
+        if (nowSet != trueSet) return false
+    }
+    return true
+}
 
 /**
  * Средняя
@@ -138,7 +211,27 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+
+
+fun Matrix<*>.inMatrix(row: Int, column: Int): Boolean =
+    (row in 0 until height) && (column in 0 until width)
+
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    val dh = listOf(1, 1, -1, -1, 0, 0, -1, 1)
+    val dw = listOf(1, 0, -1, 0, -1, 1, 1, -1)
+    val mat = createMatrix(matrix.height, matrix.width, 0)
+    for (i in 0 until mat.height)
+        for (j in 0 until mat.width) {
+            var sum = mat[i, j]
+            for (k in dh.indices) {
+                val nowH = dh[k] + i
+                val nowW = dw[k] + j
+                if (matrix.inMatrix(nowH, nowW)) sum += matrix[nowH, nowW]
+                mat[i, j] = sum
+            }
+        }
+    return mat
+}
 
 /**
  * Средняя

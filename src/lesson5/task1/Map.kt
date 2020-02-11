@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import lesson4.task1.mean
+
 /**
  * Пример
  *
@@ -176,16 +178,8 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  *   averageStockPrice(listOf("MSFT" to 100.0, "MSFT" to 200.0, "NFLX" to 40.0))
  *     -> mapOf("MSFT" to 150.0, "NFLX" to 40.0)
  */
-fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
-    val map = mutableMapOf<String, List<Double>>()
-    stockPrices.map { (stock, price) ->
-        map[stock] = if (stock in map) map[stock]!! + price
-        else listOf(price)
-    }
-    val ans = mutableMapOf<String, Double>()
-    map.map { (key, value) -> ans[key] = value.sum() / value.size }
-    return ans
-}
+fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> =
+    stockPrices.groupBy({ it.first }, { it.second }).mapValues { mean(it.value) }
 
 
 /**
@@ -203,18 +197,8 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  *     "печенье"
  *   ) -> "Мария"
  */
-fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
-    var coast: Double? = null
-    var ans = ""
-    stuff.map { (k, v) ->
-        if (v.first == kind && (coast == null || coast!! > v.second)) {
-            coast = v.second
-            ans = k
-        }
-    }
-    return if (coast == null) null else ans
-
-}
+fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? =
+    stuff.filter { (_, v) -> v.first == kind }.minBy { (_, v) -> v.second }?.key
 
 /**
  * Средняя
@@ -226,7 +210,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean =
-    word.toSet() + chars.toSet() == chars.toSet()
+    word.toLowerCase().toSet() + chars.map { it.toLowerCase() }.toSet() == chars.map { it.toLowerCase() }.toSet()
 
 /**
  * Средняя
@@ -325,9 +309,10 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    val map = mutableMapOf<Int, Int>()
     list.mapIndexed { index, it ->
-        val k = number - it
-        if (list.indexOf(k) >= 0 && list.indexOf(k) != index) return Pair(index, list.indexOf(k))
+        if (it in map) return Pair(map.getOrDefault(it, 0), index)
+        map[number - it] = index
     }
     return Pair(-1, -1)
 }
@@ -353,4 +338,33 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *     450
  *   ) -> emptySet()
  */
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val wAndv = treasures.values.toList()
+    val name = treasures.keys.toList()
+    val n = treasures.size
+    val ans = mutableListOf<MutableList<Pair<Int, MutableSet<String>>>>()
+    for (i in 0..n) {
+        ans.add(mutableListOf())
+        for (j in 0..capacity) {
+            ans[i].add(Pair(0, mutableSetOf()))
+        }
+    }
+    for (i in 1..n) {
+        for (j in 0..capacity) {
+            if (j >= wAndv[i - 1].first) {
+                if (ans[i - 1][j].first > ans[i - 1][j - wAndv[i - 1].first].first + wAndv[i - 1].second) {
+                    ans[i][j] = ans[i - 1][j]
+                } else {
+                    ans[i][j] = Pair(
+                        ans[i - 1][j - wAndv[i - 1].first].first + wAndv[i - 1].second,
+                        (ans[i - 1][j - wAndv[i - 1].first].second + name[i - 1]).toMutableSet()
+                    )
+                }
+            } else {
+                ans[i][j] = ans[i - 1][j]
+            }
+        }
+    }
+    return ans[n][capacity].second
+}
+

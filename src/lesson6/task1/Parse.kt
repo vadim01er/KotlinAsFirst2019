@@ -2,6 +2,9 @@
 
 package lesson6.task1
 
+import lesson2.task2.daysInMonth
+import java.lang.IllegalArgumentException
+
 /**
  * Пример
  *
@@ -69,7 +72,20 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+val month = listOf(
+    "января", "февраля", "марта", "апреля",
+    "мая", "июня", "июля", "августа",
+    "сентября", "октября", "ноября", "декабря"
+)
+
+fun dateStrToDigit(str: String): String {
+    val data = str.split(" ")
+    if (data.size != 3) return ""
+    val mon = month.indexOf(data[1])
+    if (mon == -1) return ""
+    if (data[0].toInt() > daysInMonth(mon + 1, data[2].toInt())) return ""
+    return "%02d.%02d.%d".format(data[0].toInt(), mon + 1, data[2].toInt())
+}
 
 /**
  * Средняя
@@ -81,7 +97,14 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val data = digital.split(".")
+    if (data.size != 3) return ""
+    if (data[1].toIntOrNull() == null || data[1].toInt() < 1) return ""
+    if (data[1].toInt() !in 1..12) return ""
+    if (data[0].toInt() > daysInMonth(data[1].toInt(), data[2].toInt())) return ""
+    return "${data[0].toInt()} ${month[data[1].toInt() - 1]} ${data[2]}"
+}
 
 /**
  * Средняя
@@ -97,7 +120,9 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String =
+    if (!Regex("""^(\+)?\d+(\(\d+\))?(\d+)?""").matches(Regex("""[\s-]""").replace(phone, ""))) ""
+    else Regex("""[-()\s]""").replace(phone, "")
 
 /**
  * Средняя
@@ -109,7 +134,13 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    var max1 = -1
+    if (Regex("""[^\d-%\s]""").find(jumps)?.value != null) return -1
+    val max = Regex("""\d+""").findAll(jumps)
+    max.forEach { max1 = maxOf(it.value.toInt(), max1) }
+    return max1
+}
 
 /**
  * Сложная
@@ -122,7 +153,17 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    if (Regex("""[^\d-+%\s]""").find(jumps)?.value != null) return -1
+    val list = jumps.split(" ")
+    var max = -1
+    if (list.size % 2 == 1) return -1
+    for (i in 0 until list.size step 2) {
+        if (list[i+1] == "+" && list[i].toInt() > max)
+            max = list[i].toInt()
+    }
+    return max
+}
 
 /**
  * Сложная
@@ -133,7 +174,25 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    val expList = expression.split(" ")
+    require(expList[0] != "")
+    var ans = 0
+    var plusOrMinus = 1
+    expList.mapIndexed { index, s ->
+        if (index % 2 == 0) {
+            require(s.all { it in '0'..'9' })
+            ans += plusOrMinus * s.toInt()
+        } else {
+            plusOrMinus = when (s) {
+                "+" -> 1
+                "-" -> -1
+                else -> throw IllegalArgumentException()
+            }
+        }
+    }
+    return ans
+}
 
 /**
  * Сложная
@@ -144,7 +203,15 @@ fun plusMinus(expression: String): Int = TODO()
  * Вернуть индекс начала первого повторяющегося слова, или -1, если повторов нет.
  * Пример: "Он пошёл в в школу" => результат 9 (индекс первого 'в')
  */
-fun firstDuplicateIndex(str: String): Int = TODO()
+fun firstDuplicateIndex(str: String): Int {
+    var countIndex = 0
+    val list = str.toLowerCase().split(" ")
+    for (i in 0 until list.size - 1) {
+        if (list[i] == list[i + 1]) return countIndex
+        countIndex += list[i].length + 1
+    }
+    return -1
+}
 
 /**
  * Сложная
@@ -157,7 +224,22 @@ fun firstDuplicateIndex(str: String): Int = TODO()
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    val list = description.split("; ")
+    var maxName = ""
+    var maxValue = -1.0
+    list.map {
+        val map = it.split(" ")
+        if (map.size != 2) return ""
+        val num = map[1].toDoubleOrNull()
+        if (num == null || num < 0.0) return ""
+        if (num > maxValue) {
+            maxName = map[0]
+            maxValue = num
+        }
+    }
+    return maxName
+}
 
 /**
  * Сложная
@@ -170,7 +252,29 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (roman.isEmpty()) return -1
+    if (!roman.matches(Regex("""M*(CM)?(D|CD)?C{0,3}(XC)?(L|XL)?X{0,3}(IX)?(V|IV)?I{0,3}"""))) {
+        return -1
+    }
+    val romans = listOf("M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I")
+    val number = listOf(1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1)
+    var index = 0
+    var ans = 0
+    while (index <= roman.length - 1) {
+        val doubleR = if (index < roman.length - 1) {
+            romans.indexOf(roman.slice(index..index + 1))
+        } else -1
+        if (doubleR == -1) {
+            ans += number[romans.indexOf(roman[index].toString())]
+            index++
+        } else {
+            ans += number[doubleR]
+            index += 2
+        }
+    }
+    return ans
+}
 
 /**
  * Очень сложная
@@ -208,4 +312,50 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun find(commands: String, perPos: Int): Int {
+    var countOfBrackets = 0
+    for (i in perPos until commands.length) {
+        when (commands[i]) {
+            '[' -> countOfBrackets++
+            ']' -> countOfBrackets--
+        }
+        if (countOfBrackets == 0) return i
+    }
+    return -1
+}
+
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    val setOfTrue = setOf('>', '<', '+', '-', '[', ']', ' ')
+    require(setOfTrue + commands.toSet() == setOfTrue)
+    var k = 0
+    for (i in commands) {
+        when (i) {
+            '[' -> k++
+            ']' -> k--
+        }
+        require(k >= 0)
+    }
+    require(k == 0)
+    val listAnswer = MutableList(cells) { 0 }
+    var nowPos = cells / 2
+    var perPos = 0
+    var count = 0
+    val order = mutableListOf<Int>()
+    while ((count < limit) && (perPos < commands.length)) {
+        check(nowPos in 0 until cells)
+        when (commands[perPos]) {
+            '>' -> nowPos++
+            '<' -> nowPos--
+            '+' -> listAnswer[nowPos]++
+            '-' -> listAnswer[nowPos]--
+            '[' -> if (listAnswer[nowPos] == 0) perPos = find(commands, perPos) else order.add(perPos)
+            ']' -> if (listAnswer[nowPos] != 0) perPos = order.last()
+            else order.remove(order.last())
+        }
+        count++
+        perPos++
+    }
+    check(nowPos in 0 until cells)
+    return listAnswer
+}

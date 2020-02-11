@@ -2,6 +2,9 @@
 
 package lesson8.task1
 
+
+import kotlin.math.abs
+
 /**
  * Точка (гекс) на шестиугольной сетке.
  * Координаты заданы как в примере (первая цифра - y, вторая цифра - x)
@@ -36,7 +39,11 @@ data class HexPoint(val x: Int, val y: Int) {
      * Расстояние вычисляется как число единичных отрезков в пути между двумя гексами.
      * Например, путь межу гексами 16 и 41 (см. выше) может проходить через 25, 34, 43 и 42 и имеет длину 5.
      */
-    fun distance(other: HexPoint): Int = TODO()
+    fun distance(other: HexPoint): Int {
+        val xd = x - other.x
+        val yd = y - other.y
+        return (abs(xd) + abs(yd) + abs(xd + yd)) / 2
+    }
 
     override fun toString(): String = "$y.$x"
 }
@@ -59,14 +66,18 @@ data class Hexagon(val center: HexPoint, val radius: Int) {
      * и другим шестиугольником B с центром в 26 и радиуоом 2 равно 2
      * (расстояние между точками 32 и 24)
      */
-    fun distance(other: Hexagon): Int = TODO()
+    fun distance(other: Hexagon): Int {
+        val d = center.distance(other.center) - (radius + other.radius)
+        return if (d > 0) d else 0
+    }
 
     /**
      * Тривиальная
      *
      * Вернуть true, если заданная точка находится внутри или на границе шестиугольника
      */
-    fun contains(point: HexPoint): Boolean = TODO()
+    fun contains(point: HexPoint): Boolean = center.distance(point) <= radius
+
 }
 
 /**
@@ -81,7 +92,9 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Такими являются, например, отрезок 30-34 (горизонталь), 13-63 (прямая диагональ) или 51-24 (косая диагональ).
      * А, например, 13-26 не является "правильным" отрезком.
      */
-    fun isValid(): Boolean = TODO()
+    fun isValid(): Boolean =
+        ((begin.x == end.x || begin.y == end.y || (begin.x - end.x == end.y - begin.y)) && (begin != end))
+
 
     /**
      * Средняя
@@ -90,7 +103,23 @@ class HexSegment(val begin: HexPoint, val end: HexPoint) {
      * Для "правильного" отрезка выбирается одно из первых шести направлений,
      * для "неправильного" -- INCORRECT.
      */
-    fun direction(): Direction = TODO()
+    fun direction(): Direction =
+        when {
+            !HexSegment(begin, end).isValid() -> Direction.INCORRECT
+            begin.x == end.x ->
+                if (begin.y > end.y) Direction.DOWN_LEFT
+                else Direction.UP_RIGHT
+
+            begin.y == end.y ->
+                if (begin.x > end.x) Direction.LEFT
+                else Direction.RIGHT
+
+            abs(begin.x - end.x) == abs(begin.y - end.y) ->
+                if (begin.x - end.x > 0) Direction.UP_LEFT
+                else Direction.DOWN_RIGHT
+
+            else -> Direction.INCORRECT
+        }
 
     override fun equals(other: Any?) =
         other is HexSegment && (begin == other.begin && end == other.end || end == other.begin && begin == other.end)
@@ -119,7 +148,7 @@ enum class Direction {
      * Вернуть направление, противоположное данному.
      * Для INCORRECT вернуть INCORRECT
      */
-    fun opposite(): Direction = TODO()
+    fun opposite(): Direction = if (this == INCORRECT) INCORRECT else values()[(ordinal + 3) % 6]
 
     /**
      * Средняя
@@ -131,7 +160,10 @@ enum class Direction {
      * Для направления INCORRECT бросить исключение IllegalArgumentException.
      * При решении этой задачи попробуйте обойтись без перечисления всех семи вариантов.
      */
-    fun next(): Direction = TODO()
+    fun next(): Direction {
+        require(this != INCORRECT)
+        return values()[(ordinal + 1) % 6]
+    }
 
     /**
      * Простая
@@ -139,7 +171,7 @@ enum class Direction {
      * Вернуть true, если данное направление совпадает с other или противоположно ему.
      * INCORRECT не параллельно никакому направлению, в том числе другому INCORRECT.
      */
-    fun isParallel(other: Direction): Boolean = TODO()
+    fun isParallel(other: Direction): Boolean = (other.opposite() == this || this == other) && this != INCORRECT
 }
 
 /**
@@ -155,7 +187,17 @@ enum class Direction {
  * 35, direction = UP_LEFT, distance = 2 --> 53
  * 45, direction = DOWN_LEFT, distance = 4 --> 05
  */
-fun HexPoint.move(direction: Direction, distance: Int): HexPoint = TODO()
+fun HexPoint.move(direction: Direction, distance: Int): HexPoint {
+    require(direction != Direction.INCORRECT)
+    return when (direction) {
+        Direction.RIGHT -> HexPoint(this.x + distance, this.y)
+        Direction.LEFT -> HexPoint(this.x - distance, this.y)
+        Direction.UP_RIGHT -> HexPoint(this.x, this.y + distance)
+        Direction.UP_LEFT -> HexPoint(this.x - distance, this.y + distance)
+        Direction.DOWN_RIGHT -> HexPoint(this.x + distance, this.y - distance)
+        else -> HexPoint(this.x, this.y - distance)
+    }
+}
 
 /**
  * Сложная
